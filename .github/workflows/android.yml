@@ -1,11 +1,9 @@
 name: Build Android APK
 
-# Run it manually (Actions tab > Build Android APK > Run workflow),
-# or push a tag like v1.0.0 to also publish the APK as a GitHub Release.
 on:
   workflow_dispatch:
   push:
-    tags: ['v*']
+    tags: ["v*"]
 
 permissions:
   contents: write
@@ -13,6 +11,7 @@ permissions:
 jobs:
   apk:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -39,11 +38,23 @@ jobs:
           npx cap add android
           npx cap sync android
 
+      - name: Fix Kotlin duplicate dependencies
+        working-directory: android
+        run: |
+          cat >> app/build.gradle <<'EOF'
+
+          configurations.configureEach {
+              exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+              exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+          }
+          EOF
+
       - name: Build debug APK
         working-directory: android
         run: ./gradlew assembleDebug
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
           name: study-quest-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
