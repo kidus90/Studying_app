@@ -1,0 +1,1004 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Study Quest</title><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#14a0b8"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Study Quest">
+<style>
+:root{--h:190;--ink:#10203a;--paper:#eef3f7;--line:#c9d5e2;--ac:hsl(var(--h) 80% 40%);--acf:hsl(var(--h) 78% 44%)}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 "Avenir Next","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:var(--paper);color:var(--ink);display:flex;justify-content:center;min-height:100vh;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:32px 32px;background-position:-1px -1px}
+#a{width:100%;max-width:560px;padding:18px 16px 48px;background:linear-gradient(90deg,var(--acf) 0 6px,transparent 6px);padding-left:26px}
+.ac{color:var(--ac)}
+h1,h2{margin:.25em 0;letter-spacing:-.02em;font-weight:800}
+h1{font-size:34px}
+.card{background:#fff;border:1.5px solid var(--ink);border-left:8px solid var(--acf);border-radius:6px 16px 16px 6px;padding:14px 16px;margin:12px 0}
+button{font:inherit;font-weight:600;color:var(--ink);background:#fff;border:2px solid var(--ink);border-radius:999px;padding:10px 18px;margin:5px 0;cursor:pointer;text-align:left;width:100%;box-shadow:0 3px 0 var(--ink);transition:transform .08s,box-shadow .08s}
+button:hover{background:#f2f8ff}
+button:focus-visible{outline:3px solid var(--acf);outline-offset:2px}
+button:active{transform:translateY(3px);box-shadow:0 0 0 var(--ink)}
+button.p{background:var(--acf);color:#fff;text-align:center;font-weight:800;font-size:17px;padding:13px 18px;text-shadow:0 1px 0 rgba(0,0,0,.25)}
+button.ok{background:#bff0d4;border-color:#0b6b3a;color:#064d29}
+button.no{background:#ffd0d6;border-color:#a3162f;color:#7a0f22}
+button.sel{background:#ffe27a;border-color:var(--ink)}
+.bar{height:14px;background:#fff;border:2px solid var(--ink);border-radius:9px;overflow:hidden;margin:6px 0}
+.bar i{display:block;height:100%;background:repeating-linear-gradient(135deg,var(--acf) 0 8px,hsl(var(--h) 78% 34%) 8px 16px);transition:width .4s}
+.big{font-size:56px;text-align:center}.row{display:flex;gap:10px}.row>*{flex:1}
+.g{display:grid;grid-template-columns:repeat(5,1fr);gap:10px 6px}
+.g button{text-align:center;padding:0;aspect-ratio:1;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05;box-shadow:0 2px 0 var(--ink);border-width:3px;border-color:var(--acf)}
+.g button.x{border-color:var(--line);box-shadow:none}
+.c{text-align:center}.x{opacity:.45;pointer-events:none}small{opacity:.8;font-weight:500}
+.bot{animation:fl 2.4s ease-in-out infinite}@keyframes fl{50%{transform:translateY(-6px)}}
+.bot.happy{animation:hop .45s 2}@keyframes hop{50%{transform:translateY(-16px) scale(1.12)}}
+.bot.mad{animation:shk .35s 3}.bot.mad .eyes circle{fill:#ff3b57}.bot.sad{animation:shk .35s 2}@keyframes shk{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.hz{display:inline-block;width:18px;height:18px;border-radius:50%;margin:6px 3px 0 0;border:2px solid var(--ink)}
+.eyes{animation:bl 4s infinite;transform-origin:40px 42px}@keyframes bl{94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+.talk{display:flex;gap:10px;align-items:center}
+.bub{background:#fff;border:2px solid var(--ink);border-radius:18px 18px 18px 4px;padding:10px 14px;flex:1;min-height:48px;position:relative}
+.sc{min-height:56px;margin:8px 0}.sc span{display:inline-block;font-size:34px;margin:0 3px;animation:pop .5s backwards}@keyframes pop{from{transform:scale(0) rotate(-40deg);opacity:0}}
+.fc{background:#fff;border:2px solid var(--ink);border-radius:20px;box-shadow:6px 6px 0 var(--acf);padding:28px 16px;margin:14px 0;touch-action:pan-y;user-select:none;cursor:grab;min-height:220px}
+.lk{display:block;margin:8px 0;color:var(--ac);font-weight:700}
+input{background:#fff!important;color:var(--ink)!important;border:2px solid var(--ink)!important;border-radius:999px!important}
+svg[viewBox="-390 -390 780 780"]{background:#fff!important;border:2px solid var(--ink)}
+svg text[fill="#efeaff"]{fill:var(--ink)}
+svg text:not([fill]){fill:#fff;font-weight:700}
+@media(prefers-reduced-motion:reduce){.bot,.eyes,.sc span,.bar i,button{animation:none;transition:none}}
+
+/* ---- interaction layer ---- */
+#a{padding-top:68px;padding-bottom:112px}
+body.focus #a{padding-top:14px;padding-bottom:40px}
+body.focus #hud,body.focus #nav{display:none}
+#a.in{animation:enter .24s ease-out}@keyframes enter{from{opacity:0;transform:translateY(10px)}}
+#hud,#nav{position:fixed;left:50%;transform:translateX(-50%);width:100%;max-width:560px;z-index:20;background:#fff;display:flex;align-items:center}
+#hud{top:0;gap:14px;padding:9px 16px;border-bottom:2px solid var(--ink);font-weight:700}
+#hud .hl{background:var(--ink);color:#fff;border-radius:999px;padding:2px 12px}
+#hud .sp{flex:1}
+#hud button#gr{width:42px;height:42px;padding:0;margin:0;border-radius:50%;border:0;box-shadow:none;position:relative;background:conic-gradient(var(--acf) calc(var(--p)*1%),#dfe7ef 0)}
+#gr i{position:absolute;inset:5px;background:#fff;border-radius:50%;display:grid;place-items:center;font:800 11px/1 inherit;font-style:normal}
+#nav{bottom:0;border-top:2px solid var(--ink);padding-bottom:env(safe-area-inset-bottom)}
+#nav button{flex:1;margin:0;border:0;box-shadow:none;border-radius:0;background:none;text-align:center;font-size:11px;padding:8px 0 10px;display:flex;flex-direction:column;align-items:center;gap:1px;transition:none}
+#nav button span{font-size:21px;line-height:1.2}
+#nav button.on{color:var(--ac);box-shadow:inset 0 4px 0 var(--acf)}
+#nav button:active{transform:none;background:#e8f1f8}
+#a .row:has(#pg){position:sticky;top:0;z-index:5;background:var(--paper);padding:8px 0;margin-top:-8px}
+#o{counter-reset:o}
+#o button{display:flex;align-items:center;gap:10px}
+#o button::before{counter-increment:o;content:counter(o,upper-alpha);flex:none;width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:800}
+button.no{animation:shk .3s}
+button.ok{animation:pk .3s}@keyframes pk{50%{transform:scale(1.04)}}
+#sheet{position:fixed;inset:0;z-index:30;display:none}#sheet.on{display:block}
+#sheet .bd{position:absolute;inset:0;background:rgba(16,32,58,.5)}
+#sheet .pn{position:absolute;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:560px;max-height:85vh;overflow:auto;background:#fff;border:2px solid var(--ink);border-bottom:0;border-radius:22px 22px 0 0;padding:16px 16px 28px;animation:up .2s ease-out}
+@keyframes up{from{transform:translate(-50%,40px);opacity:0}}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 14px}
+.g3 button{text-align:center;border-radius:16px;font-size:13px;padding:10px 4px;line-height:1.3}
+.g3 button span{font-size:24px;display:block}
+#toast{position:fixed;left:50%;bottom:92px;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:8px 18px;border-radius:999px;font-weight:700;opacity:0;pointer-events:none;transition:.2s;z-index:40}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+body.focus #toast{bottom:30px}
+#cf{position:fixed;inset:0;pointer-events:none;z-index:50}
+@media(prefers-reduced-motion:reduce){#a.in,#sheet .pn,button.no,button.ok{animation:none}}
+
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+.chips button{width:auto;flex:none;margin:0 0 4px;padding:6px 14px;font-size:13px;box-shadow:0 2px 0 var(--ink);white-space:nowrap}
+.chips button.on{background:var(--ink);color:#fff}
+#mmv{position:relative;height:min(72vh,640px);border:2px solid var(--ink);border-radius:18px;overflow:hidden;background:#fff radial-gradient(circle,#c9d5e2 1px,transparent 1.5px) 0 0/22px 22px}
+#mmsvg{width:100%;height:100%;display:block;touch-action:none;cursor:grab;user-select:none}
+#mmsvg:active{cursor:grabbing}
+.zc{position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:6px}
+.zc button{width:40px;height:40px;padding:0;margin:0;border-radius:50%;text-align:center;font-size:20px;line-height:1;background:#fff}
+#mmp{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:2px solid var(--ink);border-radius:16px 16px 0 0;padding:10px 14px 12px;max-height:52%;overflow:auto;display:none}
+#mmp h2{font-size:19px;margin:0}#mmp p{margin:.3em 0}
+#mmp .xx{position:absolute;top:6px;right:8px;width:34px;margin:0;padding:4px 0;text-align:center;box-shadow:none;border-width:0;background:none;font-size:18px}
+.lgd i{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 10px;border:1px solid var(--ink)}
+body.gate #hud,body.gate #nav{display:none!important}
+.cs{display:flex;gap:12px;align-items:center}.cs .ic{font-size:34px}.cs .tx{flex:1}.cs.soon{opacity:.55}
+
+#nudge{position:fixed;top:58px;left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:520px;z-index:45;background:var(--acf);color:#fff;border:2px solid var(--ink);border-radius:16px;padding:10px 14px;text-align:center;cursor:pointer;box-shadow:0 4px 0 var(--ink);animation:enter .3s}
+body.gate #nudge{display:none}
+#intro{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:rgba(16,32,58,.6)}
+#intro .pn{background:#fff;color:var(--ink);border:2px solid var(--ink);border-radius:22px;width:90%;max-width:400px;padding:20px;text-align:center;animation:enter .3s}
+html[data-theme=night] .card,html[data-theme=night] .bub,html[data-theme=night] .fc,html[data-theme=night] button,html[data-theme=night] #hud,html[data-theme=night] #nav,html[data-theme=night] #sheet .pn,html[data-theme=night] #intro .pn,html[data-theme=night] .bar,html[data-theme=night] input{background:#17233a!important;color:var(--ink)!important}
+html[data-theme=night] [style*="fff4c2"]{background:#3a3418!important}
+html[data-theme=night] button.p{background:var(--acf)!important;color:#fff!important}
+html[data-theme=night] button.ok{background:#0f4a2c!important;color:#bff0d4!important}
+html[data-theme=night] button.no{background:#5a1624!important;color:#ffd0d6!important}
+html[data-theme=night] button.sel{background:#6b5a14!important;color:#ffe27a!important}
+html[data-theme=night] #hud .hl,html[data-theme=night] #o button::before{color:#0e1522!important}
+html[data-theme=night] #nav button{background:none!important}
+html[data-theme=night] #hud button#gr{background:conic-gradient(var(--acf) calc(var(--p)*1%),#2a3850 0)!important}
+html[data-theme=night] #gr i{background:#17233a!important}
+
+/* ---- streak widget ---- */
+.sw{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.sw .n{font-size:44px;font-weight:800;line-height:1;letter-spacing:-.03em}
+.sw .l{font-size:12px;font-weight:700;opacity:.75;text-transform:uppercase;letter-spacing:.04em}
+.sw .r{text-align:right}
+.wk{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:14px 0 6px;text-align:center}
+.wk div{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-weight:700}
+.wk b{width:100%;max-width:42px;aspect-ratio:1;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font-size:20px;line-height:1}
+.wk .p b{background:rgba(255,170,0,.28)}.wk .m b{background:rgba(80,140,255,.22)}.wk .f b{background:rgba(80,200,255,.3)}
+.wk .t b{border-style:dashed}.wk .e b{opacity:.3;border-style:dotted}.wk .t span{color:var(--ac)}
+.fzr{display:flex;align-items:center;gap:10px;margin-top:10px}
+.fzr .ic{font-size:22px;letter-spacing:2px;white-space:nowrap}
+.fzr .bar{flex:1;margin:0}
+</style></head><body><div id="a"></div>
+<script type="text/plain" id="cd-st">
+const D=`🌐|System|A set of interrelated elements with inputs, outputs and processes that turn inputs into outputs to meet a goal.|A bakery: flour goes in, bread comes out, and bakers and ovens work together in between.
+🧩|Holism|Seeing the whole as primary and the parts as secondary: a system is more than the sum of its parts.|A song is more than a pile of separate notes.
+🔬|Reductionism|Explaining something by breaking it into its smallest parts and studying each part in isolation.|Taking a watch apart to find time, then finding no time inside any single gear.
+⚙️|Machine Age|The scientific era that treated the world like a machine of causal laws and analysed it down to indivisible parts.|Treating a forest as a heap of timber instead of a living community.
+🌱|Systems Age|The era that studies systems as wholes and explains the parts in terms of the whole, not the other way round.|Understanding the heart by what it does for the body, not as a lump of muscle.
+🌲|Systems Thinking|A mindset for seeing the big picture and the interactions between parts: the art of seeing the forest and the trees.|Looking at a city from a hilltop: you see the streets and how traffic flows between them.
+✨|Emergence|A property that belongs to the whole system and to none of its parts alone.|Wetness belongs to water, yet no single water molecule is wet.
+🌀|Complexity|Difficulty that stems from many interconnected parts and interactions, not just from size.|A traffic jam: no single car causes it, yet it appears.
+🪢|Wicked Problem|A messy, ill-defined problem with no single agreed definition or final solution, where stakeholders disagree.|Fixing a city's traffic: every fix changes the problem and everyone wants something different.
+🎯|Goal Seeking|A system exists for a purpose, and its behaviour is directed at reaching its goals.|A taxi driving toward the passenger's destination.
+📥|Inputs and Outputs|A system takes inputs from its environment and releases outputs back into it.|A coffee machine: water and beans in, coffee out.
+🔄|Transformation Process|The activities inside a system that convert its inputs into outputs.|The oven that turns dough into bread.
+🎛️|Regulation|A system monitors itself and applies control so that its behaviour stays on course.|Cruise control keeping the car at 90 km/h.
+🪜|Hierarchy|A system contains subsystems and can itself be a part of a larger system.|Russian dolls: each one fits inside a bigger one.
+🧬|Differentiation|As a system grows, its parts specialise in different functions.|A hospital with separate departments for surgery, laboratory and pharmacy.
+🛣️|Equifinality|A system can reach the same end state through different paths and means.|Many different roads that all lead to the same city.
+🧱|Boundary|The line that separates a system from its environment and defines what is inside the system of interest.|The fence around a school compound.
+🌍|Environment|Everything outside the boundary that influences the system or is influenced by it.|The weather, roads and neighbours around a school.
+🚪|Open System|A system that exchanges inputs and outputs with its environment and depends on it.|A shop that buys stock from suppliers and sells to customers.
+🔒|Closed System|A system with little or no exchange with its environment, at least in theory.|A sealed terrarium.
+🌫️|Entropy|The tendency of a system to drift toward disorder unless effort keeps it organised.|A bedroom that gets messy unless you keep tidying it.
+🏺|Teleology|Explaining things by the purpose they serve. Aristotle saw the parts of the world only through their relation to the whole.|Explaining a knife by its purpose of cutting, not by its chemistry.
+📚|Tektology|Bogdanov's universal science of organization: every human activity, technical or social, follows organizational laws.|One rulebook of teamwork that fits ants, firms and orchestras.
+🧪|General Systems Theory|Von Bertalanffy's open-system theory, which rejected the mechanistic and reductionist models of biology and psychology.|A map of laws that apply to cells, companies and cities alike.
+📡|Cybernetics|Wiener's science of control and communication in animals and machines, built on feedback.|A pilot who keeps reading the instruments and correcting the course.
+🏭|Industrial Dynamics|Forrester's study of how information feedback, policies and delays shape the success of a business; the start of System Dynamics.|A supply chain where a small change in shop orders becomes a huge swing at the factory.
+🔭|Systems Science|The post-war movement that put science back together to study phenomena as wholes, through inter-disciplines like Cybernetics and Systems Engineering.|Reassembling a puzzle that the Machine Age had cut into narrow pieces.
+🏢|Organization|A formal social structure that takes inputs from its environment and processes them into outputs. It operates through human activity.|A university: students and funding in, graduates and research out.
+👥|Enterprise|A group of people with a common goal and the resources to achieve that goal.|A football club: players, a shared goal and a budget.
+📋|Business Process|A set of coordinated activities, in an organizational and technical environment, that jointly realize a business goal.|Handling an order: receive, check stock, take payment, ship.
+💻|Information System|An arrangement of people, data, processes, communication and IT that captures, stores and delivers information to support operations and decisions.|A hospital records system that lets doctors, nurses and pharmacists all see the same patient file.
+🧭|Decision Levels|Managers decide at three levels: strategic (direction), tactical (planning) and operational (daily work).|A ship: the captain picks the destination, the officers plan the route, the crew steers.
+💎|Value of Information|Information systems create value by cutting cost, improving processes, raising customer satisfaction, and aligning with goals.|A lighthouse that makes the whole harbour safer and faster.
+🏭|ERP|Enterprise Resource Planning: integrated management of the main business processes, with one shared database for every department.|One shared notebook for the whole company instead of a separate notebook per department.
+🛠️|ERP Life Cycle|The path of an ERP project: AS-IS documentation, TO-BE documentation, software and vendor selection, implementation, go live, post-implementation.|Renovating a house: survey the old one, design the new one, pick a builder, build, move in, fix leftovers.
+🔗|End-to-End Process|Cycles such as Procure-to-Pay and Order-to-Cash that run across departments to remove fragmentation and improve integration.|A relay race where the baton never touches the ground between runners.
+🗺️|Model|A representation of part of reality made for a purpose: a tool for thinking.|A city map: it leaves out most details so you can find your way.
+✂️|Abstraction|Stripping an idea or system of its concrete features so that only the relevant ones remain.|A metro map that keeps stations and lines but ignores the streets above.
+🧱|Simple Models|Models should be simple but complete: start small, then refine by enriching them or reformulating them.|Sketching a house in pencil before drawing the final blueprint.
+📐|System Model|A model that specifies the transformation process, the boundary, subsystems, inputs, decision rules and desired or undesired outputs.|A control-room diagram of a factory showing what goes in, what happens and what comes out.
+🏗️|Hard Systems Thinking|Assumes organizations can be objectively studied, modelled and controlled to meet a defined purpose. The question is how to solve a clearly defined problem.|Building a bridge: the goal is clear and engineers calculate how.
+🗣️|Soft Systems Thinking|Assumes problems are ill-structured, with several valid interpretations. Inquiry is organised as a learning system that integrates stakeholder views.|A community meeting where everyone sees the problem differently and they must learn from each other.
+⏳|System Dynamics|An approach to understanding the non-linear behaviour of complex systems over time using stocks, flows, feedback loops and time delays.|A weather simulator that shows how a storm builds and fades over days.
+➡️|Linear Thinking|Factors are independent, cause runs one way and every factor matters equally.|A row of dominoes: push the first and the rest simply fall.
+🔁|Closed-Loop Thinking|Factors depend on each other, causality is circular, and some factors matter more than others.|A conversation: what you say changes what I say, which changes what you say next.
+🧶|Causal Loop Diagram|A map of a system's variables and the arrows between them that reveals its feedback loops and structure.|A subway map of influences rather than stations.
+🛁|Stock and Flow Diagram|The quantitative version of a causal loop diagram: stocks accumulate, flows fill or drain them, and the model can be simulated.|A bathtub: the water level is the stock, the tap and the drain are the flows.
+♻️|Feedback Loop|A chain of cause and effect that returns to its start, so the output of a system influences its own input.|A microphone too close to the speaker: the sound feeds itself.
+⛄|Reinforcing Loop|A feedback loop where change in one direction produces more change in the same direction, giving growth or collapse.|A snowball rolling downhill, getting bigger and faster.
+🌡️|Balancing Loop|A feedback loop that counters change and pushes the system back toward a goal or limit.|A thermostat that switches the heater on and off to hold the temperature.
+⏲️|Time Delay|The gap between an action and its effect, which can make a system overshoot or swing back and forth.|A shower that takes time to warm up, so you keep turning the knob and get scalded.
+🧮|Simulation|Running a stock and flow model over time to see how the system behaves.|A flight simulator for a business: crash it safely in the model.
+🧱|Structure Determines Behaviour|A system's own structure of loops, stocks and delays produces its behaviour, rather than outside blame.|The shape of a riverbed decides how the water flows, not the water's mood.
+🌫️|Soft Systems Methodology|Checkland's organised but flexible learning process for messy problem situations that people see as problematic and want to improve.|A guided group conversation that turns confusion into agreed action.
+🖍️|Rich Picture|A drawing of a problem situation showing people, structures, processes, conflicts and concerns. Used in the finding-out stages of SSM.|A comic strip of everything going on in the problem.
+👓|Weltanschauung|A person's worldview: the internalised, taken-for-granted assumptions that shape how they see a situation.|Tinted glasses: red glasses make the world look red.
+📝|Root Definition|A concise statement of a relevant system, captured with the CATWOE mnemonic.|A one-sentence mission statement for an ideal system.
+🔤|CATWOE|Customers, Actors, Transformation process, Weltanschauung, Owners and Environmental constraints: the checklist for a root definition.|A six-point checklist before takeoff.
+🕹️|Conceptual Model|A human activity model built from about 7 plus or minus 2 verbs, plus a monitoring and control subsystem.|A flowchart of what an ideal system would have to do.
+💎|Five Es|Efficiency, Effectiveness, Efficacy, Ethicality and Elegance: the criteria for judging a human activity model.|Five judges at a competition, each scoring something different.
+🤝|Desirable and Feasible|Changes agreed in SSM must be systemically desirable and also culturally feasible before they are put into action.|A plan that is good on paper and also fits how people really work.
+❤️|Design Thinking|A human-centred, empathetic approach that starts from the customer and treats problem solving as a mindset and a process.|A tailor who measures you before cutting the cloth.
+🌐|Systems and Design Thinking|Systems thinking brings the holistic view, design thinking brings empathy. Combined, they are holistic, empathetic and innovative.|A map plus a local guide: you see the whole city and feel the neighbourhood.
+💻|SE as a Wicked Problem|Software engineering is itself a wicked problem used to solve another one: finding what is of real value to the customer.|Building a ship while still deciding where it should sail.`.split('\n').map(l=>{let a=l.split('|');return{e:a[0],t:a[1],d:a[2],a:a[3]}});
+const SO=[['Reductionism','Reductionist or Holistic?','Reductionist','Holistic','Take it apart,Study parts in isolation,Machine Age thinking','See the whole first,Study the interactions,Systems Age thinking'],['Open System','Open or Closed system?','Open','Closed','Exchanges with the environment,Depends on its inputs,A shop with customers','Little exchange,Sealed off,A sealed terrarium'],['Closed-Loop Thinking','Linear or Closed-loop?','Linear','Closed-loop','Cause runs one way,Factors are independent,All factors equally important','Causality is circular,Factors influence each other,Some factors matter more'],['Soft Systems Thinking','Hard or Soft thinking?','Hard','Soft','Problem is clearly defined,Objective study of the organization,Focus on how to solve it','Ill-structured problems,Several stakeholder views,A learning system'],['Balancing Loop','Reinforcing or Balancing?','Reinforcing','Balancing','Snowball effect,Growth or collapse,Amplifies change','Thermostat,Seeks a goal,Counters change'],['Decision Levels','Strategic or Operational?','Strategic','Operational','Choose the company direction,Set long-term goals,Enter a new market','Process todays orders,Day-to-day tasks,Record a sale'],['Systems and Design Thinking','Systems or Design Thinking?','Systems Thinking','Design Thinking','Holistic view,Maps relationships and structure,Sees the whole system first','Empathetic,Human-centred,Starts from the customer']];
+const SQ=[['Inputs and Outputs','Order the flow through a system','Inputs,Transformation process,Outputs,Feedback'],['Hard Systems Thinking','Order the hard systems engineering steps','Analyse,Design,Build,Implement,Operate and maintain'],['Soft Systems Methodology','Order the seven SSM stages','Problem situation unstructured,Problem situation expressed,Root definitions,Conceptual models,Compare models with reality,Feasible and desirable changes,Action to improve'],['ERP Life Cycle','Order the ERP life cycle','AS-IS documentation,TO-BE documentation,Software and vendor selection,Implementation,Go live,Post-implementation'],['Simple Models','Refine a model the right way','Start with a small model,Find its shortcomings,Enrich or reformulate it'],['Simulation','From problem to simulation','Identify main variables,Draw a causal loop diagram,Build a stock and flow diagram,Develop the simulation model,Validate the model'],['System Dynamics','Order the System Dynamics method','Problem structuring,Causal loop modelling,Stock and flow modelling,Scenario planning,Implementation and learning'],['Balancing Loop','Walk through a thermostat loop','Room gets too cold,Sensor detects the gap,Heater switches on,Room warms up,Heater switches off']];
+const SC=[['Systems Thinking','Changing one part of the organization caused unexpected side effects elsewhere, so the team now maps how all the parts interact.'],['Reductionism','To understand a car, someone studies each bolt on its own and never looks at how the car drives.'],['Emergence','Single ants are simple, yet the colony builds bridges and farms fungus. The ability belongs to no single ant.'],['Equifinality','Two teams used completely different methods, and both delivered the same working product.'],['Entropy','Nobody maintains the old server room. Cables tangle and the setup slowly drifts into disorder.'],['Balancing Loop','The room gets hot, the air conditioner starts, and the temperature falls back toward the set point.'],['Reinforcing Loop','More users make the app more useful, which attracts even more users.'],['Time Delay','A manager orders extra stock, but it takes weeks to arrive, so he orders again and ends up with far too much.'],['Causal Loop Diagram','The team draws arrows between variables to see which feedback loops drive customer adoption.'],['Stock and Flow Diagram','Analysts model an account balance that fills with deposits and drains with withdrawals, then simulate it over 15 years.'],['Rich Picture','Stakeholders sketch the people, conflicts and processes of a messy situation to express it.'],['CATWOE','An analyst lists the customers, actors, transformation, worldview, owners and environmental constraints of a relevant system.'],['Weltanschauung','Two managers look at the same problem, but each sees it differently because of deeply held assumptions.'],['Hard Systems Thinking','The problem is clear: build a payroll system. The team analyses, designs, builds and deploys it.'],['Soft Systems Thinking','Staff and managers disagree about what the problem even is, so the team runs workshops to learn from every view.'],['Design Thinking','Before designing the app, the team interviews customers and tries to walk in their shoes.'],['ERP','Sales, finance and stores each keep a separate database. The company wants one connected source of truth.'],['Boundary','The team debates what is inside the system they are studying and what belongs to the outside world.'],['Wicked Problem','Every fix to the city traffic changes the problem, and nobody agrees what the problem really is.'],['Hierarchy','A department is a system, but it is also a small part of the whole company.'],['Industrial Dynamics','Small changes in shop orders get magnified into huge swings at the factory.'],['Cybernetics','A pilot keeps reading instruments and correcting the course.']];
+const R=['Lost Tourist','Curious Observer','Part Spotter','Whole Seer','Boundary Drawer','Flow Tracker','Feedback Finder','Pattern Hunter','Model Maker','Abstraction Ace','Loop Mapper','Stock Keeper','Delay Tamer','Worldview Reader','Rich Picture Painter','Root Definer','Change Weaver','Systems Practitioner','Chief Systems Thinker','Grand Systems Master'];
+const SCN=`🌾 ➡️ ⚙️ ➡️ 🍞 🔁
+🎵 🎵 🎵 ➡️ 🎼
+⌚ ➡️ 🔧 🔩 ⚙️ ❓
+🏭 ⚙️ ➡️ 🌍
+🌍 ➡️ 🔍 ➡️ 🧩
+🌲 🌳 👀 🌲
+🐜 🐜 🐜 ➡️ 🏰
+🔗 🔗 🔗 🌀
+🚗 🚦 😵 🔁
+🚕 ➡️ 🎯
+💧 🫘 ➡️ ☕
+🥣 ➡️ 🔥 ➡️ 🍞
+🚗 ⏱️ 🔧 ✅
+🪆 ➡️ 🪆 ➡️ 🪆
+🏥 🔪 🧪 💊
+🛣️ 🛤️ 🌉 ➡️ 🏙️
+🏫 🚧 🌳
+🌦️ 🛣️ 🏘️ ➡️ 🏫
+🛒 ↔️ 🏬 ↔️ 👥
+🫙 🌿 🔒
+🛏️ ➡️ 🧦 👕 🗑️ ➡️ 🌫️
+🔪 ➡️ ✂️ 🎯
+📚 🏛️ 🐜 🎻
+🧬 🏢 🏙️ ➡️ 🗺️
+✈️ 👀 📟 🔧
+🏪 ➡️ 🚚 ➡️ 🏭 📈
+🔬 ➡️ 🧩 ➡️ 🌐
+🌍 ➡️ 🏢 ➡️ 📦
+👥 🎯 💼
+📝 ➡️ ✅ ➡️ 💳 ➡️ 📦
+👥 🗃️ 💻 📡 ➡️ 📊
+🔭 🧭 🔧
+📊 ➡️ 💡 ➡️ 💰
+💰 👥 🏭 📦 ➡️ 🧠
+📜 ➡️ 🔮 ➡️ 🤝 ➡️ 🚀
+🛒 ➡️ 📦 ➡️ 💳 ➡️ 💵
+🌍 ➡️ 🗺️
+🌳 ➡️ ✂️ ➡️ 🔲
+🧱 ➡️ 🏗️ ➡️ 🏙️
+📥 ➡️ ⚙️ ➡️ 📤 🧭
+🏗️ 📏 ✅
+🗣️ 👥 🧠 💬
+⏳ 📈 🔁 🌀
+1️⃣ ➡️ 2️⃣ ➡️ 3️⃣
+🅰️ ➡️ 🅱️ ➡️ 🅰️
+🔵 ➡️ 🔵 ➡️ 🔵 🔁
+🚰 ➡️ 🛁 ➡️ 🕳️
+📤 ➡️ 📥 🔁
+⛄ ➡️ ⛄⛄ ➡️ ⛄⛄⛄
+🌡️ ➡️ ❄️ ➡️ 🌡️ ✅
+📦 ⏳ ⏳ ⏳ ➡️ 🏠
+🧮 ➡️ ▶️ ➡️ 📉 📈
+🏗️ ➡️ 🎭
+🌫️ ➡️ 🗣️ ➡️ 🧠 ➡️ ✅
+🖍️ 🧑‍🤝‍🧑 💬 ⚡
+👓 🔴 👓 🔵
+📝 ➡️ 🎯
+🛒 🎭 🔄 👓 👑 🌍
+🧩 ➡️ 🗺️ ➡️ 🕹️
+⚡ 🎯 ✅ ⚖️ 💎
+👍 🤝 🧭
+❤️ 👂 ✏️ 💡
+🌐 ➕ ❤️ ➡️ 💡
+💻 ➡️ 🌀 ➡️ 💎`.split('\n');D.forEach((c,i)=>c.s=SCN[i]);
+const GR=[['Foundations',0,8],['System Properties',9,20],['Pioneers',21,26],['Organizations & IS',27,35],['Modelling',36,41],['System Dynamics',42,52],['SSM & Design',53,63]];
+const BG=[['Systems Thinking','The call center was slow, so the firm hired more agents, but the confusing billing process stayed and complaints grew.','Map the whole system and treat the root cause, not the symptom'],['Reductionism','The team tested every module on its own and missed the failure that only appears when modules interact.','Study the interactions between the parts, not only each part'],['Hard Systems Thinking','Managers forced a fixed solution on a messy situation where stakeholders disagree about the goal.','Use soft systems thinking to explore the different views first'],['Boundary','A project left customers and regulators outside its system boundary and was surprised by their demands.','Redraw the boundary to include everything that matters'],['Time Delay','A manager keeps doubling an order because the first delivery has not arrived yet, and ends up with a huge surplus.','Account for the delay before reacting again'],['Simple Models','A team built an enormous model with every detail and now nobody understands it.','Start with a small simple model and refine it'],['Weltanschauung','A change project ignored that departments hold very different assumptions and met heavy resistance.','Surface the different worldviews and look for accommodations'],['Feedback Loop','A system has no way to compare results with its goal, so errors keep growing.','Add monitoring and a feedback loop to correct course'],['Linear Thinking','An analyst drew a one-way chain from cause to effect and missed that the effect feeds back into the cause.','Draw the closed loop with a causal loop diagram'],['Design Thinking','A product team designed features without ever talking to the people who would use them.','Start from the users and empathise first']];
+const BN=['Gigachad_Gary','NPC_Nora','SigmaSam','DebugQueen','ByteMeBro','Feedback_Fiona','Loop_Larry','Fabio_404','Boundary_Bella'];
+</script>
+<script type="text/plain" id="cd-soa">
+const D=`🏛️|Software Architecture|The big-picture plan of a system: its parts, how they connect, and the rules that guide its design.|A building's blueprint, drawn before any bricks are laid.
+🔧|Service|A self-contained piece of software that does one job and is used through a clear interface.|A restaurant kitchen: you order from the menu and never see the chef work.
+🔒|Encapsulation|A service hides its inner logic and exposes only its contract (interface).|A vending machine: you press buttons, the machinery stays hidden.
+♻️|Reusability|One service can be used by many different applications.|One power outlet that serves every appliance in the house.
+🌍|Interoperability|Services on different platforms and languages can still talk using standard protocols.|People who speak different languages using one shared sign language.
+🔎|Discoverability|A service can be published, found and invoked easily.|Finding a shop in a mall directory.
+🏙️|SOA|Service-Oriented Architecture: building software as many reusable, independent services that cooperate.|A city: transport, utility and finance services each work alone, yet together run the city.
+🔗|Loose Coupling|Services depend on each other as little as possible, so one can change without breaking the rest.|Lego bricks: swap one without rebuilding the castle.
+🧩|Composability|Small services can be combined into bigger business processes.|Combining ingredients into different meals.
+🔄|Agile|Deliver in small iterations, collect feedback constantly and adapt fast to change.|Tasting the soup as you cook instead of after serving.
+🚚|CI/CD|Continuous Integration/Delivery: automatically build, test and deploy every code change.|A factory conveyor belt with a quality check at every station.
+📦|Containerization|Package an app with all its dependencies so it behaves the same everywhere (Docker).|A shipping container: same box on any ship, train or truck.
+🎼|Orchestration|Tools like Kubernetes automate running, scaling and self-healing of many containers.|A conductor directing an orchestra of containers.
+🏚️|Operational Systems Layer|The bottom SOA layer: legacy apps, ERP, CRM and databases. SOA wraps them instead of replacing them.|The old plumbing every new tap connects to.
+🧱|Service Component Layer|Components that wrap operational systems and expose specific functions as services.|An adapter between an old wall socket and a new device.
+📋|Services Layer|The catalog of discoverable services such as GetCustomerDetails, PlaceOrder and CheckInventory.|The menu of a restaurant.
+🗺️|Business Process Layer|Orchestrates services into workflows, e.g. FulfillOrder = check stock + pay + ship.|A recipe that combines menu items into a full meal.
+📱|Consumer Layer|The top layer where users and apps (portals, mobile apps, partners) use the services.|The dining table where customers actually eat.
+🚌|ESB|Enterprise Service Bus: a middleware hub that routes, transforms (XML to JSON) and secures messages between services.|One central bus station instead of a road between every pair of towns.
+📒|Service Registry|A directory (yellow pages) where services are listed, found and governed, which encourages reuse.|The phone book for services.
+📬|Message Broker|Middleware that queues and delivers messages so services can talk reliably without waiting.|A post office holding letters until the receiver is ready.
+🕸️|Distributed System|Many independent computers acting as one: scalable and fault tolerant, but facing latency and network failures.|An ant colony acting as a single creature.
+🌐|REST|A simple, web-friendly style using URLs and HTTP. Cacheable and great for public APIs, but can be chatty.|Ordering through simple website links.
+✉️|SOAP|A formal XML protocol (Envelope, Header, Body) with strict contracts and strong enterprise security.|A notarised legal letter with a strict format.
+⚗️|ACID|Atomicity, Consistency, Isolation, Durability: four guarantees that keep database transactions safe.|A bank transfer that fully happens or not at all.
+🏷️|API Versioning|Evolving an API (/v1, /v2) without breaking existing clients. Plan backward compatibility from day one.|A new phone model that still takes the old charger.
+🎭|Saga Pattern|A chain of local transactions where each step has a compensating undo step if a later step fails.|Booking a trip: if the hotel fails, you cancel the flight too.
+⚡|Circuit Breaker|Stops calls to a failing service (Closed, Open, Half-Open) so it fails fast and can recover.|A fuse box that cuts power before a fire starts.
+🚪|API Gateway|A single entry point that routes, combines, secures and rate-limits client requests.|A hotel reception desk.
+📞|Synchronous Call|The caller waits for the reply. Simple, but tightly coupled.|A phone call.
+📨|Asynchronous Messaging|Fire-and-forget messages: loosely coupled, scalable and resilient.|Sending an email and carrying on with your day.
+📢|Publish-Subscribe|A publisher emits one event and every subscriber reacts on its own (1 to many).|A YouTube channel notifying all its subscribers.
+🧬|Microservice|A small, independently deployable service that owns one business capability and its data.|A single food stall in a big market.
+🗂️|Bounded Context|A Domain-Driven Design boundary; each one becomes a microservice (Catalog, Order, Payment).|Company departments, each with its own vocabulary.
+🗄️|Database per Service|Each service owns its database; no direct database access between services.|Every shop keeps its own cash register.
+🛠️|DevOps|Culture plus automation (CI/CD, infrastructure as code, monitoring) where teams run what they build.|Chefs who also run their own kitchen.
+🪪|Authentication|Proving who you are. Authorization is the separate question of what you may do.|Showing your ID at the door.
+🎟️|OAuth 2.0|Delegated login standard ("Login with Google"): the app gets a token and never sees your password.|A valet key: it drives the car but cannot open the trunk.
+🔖|JWT|A signed, self-contained token (Header.Payload.Signature) that keeps APIs stateless.|A festival wristband with a tamper-proof stamp.
+🤝|mTLS|Both services present certificates and encrypt the link: secure service-to-service talk.|Two agents showing matching badges.
+🛡️|Zero Trust|Never trust by default: authenticate and authorize every request, even internal ones.|An office where every single door needs a badge.
+🔐|Secrets Vault|A central encrypted store for API keys and passwords. Never commit secrets to code.|A bank safe for passwords.
+📜|API Governance|Shared standards (naming, status codes, docs, SLAs) and a registry that keep APIs consistent.|Traffic laws for services.`.split('\n').map(l=>{let a=l.split('|');return{e:a[0],t:a[1],d:a[2],a:a[3]}});
+const SO=[['Asynchronous Messaging','Sync or Async?','Sync','Async','Web API query,Live price lookup,User waiting on a screen','Send email alerts,Nightly batch jobs,Background video processing'],
+['SOAP','REST or SOAP?','REST','SOAP','Simple and browser-friendly,Built-in caching,Great for public APIs','XML Envelope,Strict formal contracts,Enterprise-grade security'],
+['SOA','Benefit or Challenge?','Benefit','Challenge','Reusability,Agility,Interoperability,Cost efficiency','Complexity,Governance effort,Hard testing,Cultural resistance'],
+['Microservice','Monolith or Microservices?','Monolith','Microservices','One big deployable,Shared database,Simple for a tiny team','Scale each service alone,Database per service,Teams own their service'],
+['API Governance','Centralized or Federated?','Centralized','Federated','One team sets all rules,Strict but slow','Teams own their services,Fast but hard to standardise'],
+['Authentication','AuthN or AuthZ?','Authentication','Authorization','Checking your ID,Password login,Who are you?','Role-based access,Can you delete this?,What may you do?'],
+['Saga Pattern','Choreography or Orchestration?','Choreography','Orchestration','Services swap events,No central boss','Central coordinator,Easy-to-follow flow']];
+const SQ=[['Consumer Layer','Stack the SOA layers from the bottom up','Operational systems,Service components,Services,Business processes,Consumers'],
+['Saga Pattern','Payment failed! Undo in the right order','Cancel payment,Release inventory,Cancel order'],
+['OAuth 2.0','Login with Google: order the flow','Click Login with Google,App redirects to Google,User logs in at Google,Google issues a code,App swaps code for token,App calls API with token'],
+['Circuit Breaker','Walk the breaker through a failure','Closed: all normal,Failures pile up,Open: fail fast,Timeout passes,Half-Open: test call,Success: Closed again'],
+['CI/CD','Order the pipeline','Commit code,Automated build,Automated tests,Deploy'],
+['Microservice','Order the evolution of architecture','Monolith,SOA,Microservices,Cloud-native']];
+const SC=[['Saga Pattern','Payment failed after stock was reserved. Earlier steps must be undone.'],['Circuit Breaker','Service B is down and A keeps hammering it, causing timeouts everywhere.'],
+['API Gateway','A mobile app needs one front door to many backends, with rate limiting.'],['ESB','The CRM sends XML but the inventory system only understands JSON.'],
+['Service Registry','A new team wants to check whether a CustomerData service already exists.'],['Publish-Subscribe','An order is placed; inventory, email and analytics must each react independently.'],
+['Containerization','The app works on my laptop but crashes on the server.'],['OAuth 2.0','Users sign in with Google without ever sharing their password with your app.'],
+['Zero Trust','Even calls between internal services must prove who they are.'],['ACID','Money left account A but never reached B. The whole transfer must roll back.'],
+['Orchestration','Thousands of containers need automatic scaling and self-healing.'],['Operational Systems Layer','An old SAP system must be reused, not replaced.'],
+['JWT','The server should keep no sessions; the token itself carries the user info.'],['Secrets Vault','Someone committed a hard-coded API key into the repo.']];
+const R=['Lost Tourist','Curious Visitor','Intern','Junior Dev','Service Scout','Contract Writer','Integrator','Bus Driver','Registry Keeper','Broker Boss','Gatekeeper','Saga Hero','Fuse Master','Container Captain','Cluster Conductor','Token Smith','Zero-Trust Warden','Governor','Chief Architect','Grand Architect'];
+const SCN=`📐 ➡️ 🏗️ ➡️ 🏠
+🙋 ➡️ 📋 ➡️ 👨‍🍳 ➡️ 🍽️
+🪙 ➡️ 🏧 ➡️ 🥤
+🔌 ➡️ 📺 💻 📱
+🇪🇹 🗣️ 🤝 🗣️ 🇬🇧
+🗺️ 🔎 🏬
+🚌 ⚡ 💧 🏦 ➡️ 🏙️
+🧱 🔗 ✂️ 🧱
+🥚 🍅 🧅 ➡️ 🍳
+🥣 👀 🔄
+💻 ➡️ 🔨 ➡️ 🧪 ➡️ 🚀
+📦 🚢 🚚 🏠
+🎼 🐳 🐳 🐳
+🏚️ 🗄️ 💾
+🧱 🔌 🏚️
+📋 🛎️
+🗺️ ➡️ 📦 ➡️ 💳 ➡️ 🚚
+📱 💻 🌐
+🚌 🔀 📨
+📒 🔎 🔧
+📬 📨 ⏳ 📥
+🖥️ 🖥️ 🖥️ ➡️ 🧠
+🔗 🌐 📄
+✉️ 📜 🔏
+💸 ➡️ 🏦 ✅
+📱 ➡️ 📲 🔌
+✈️ 🏨 💳 ❌ ↩️ 🏨 ↩️ ✈️
+🔥 ⚡ 🔌 ⛔ ➡️ 🔧 ➡️ ✅
+📱 ➡️ 🚪 ➡️ 🔧 🔧 🔧
+📞 ⏳ 💬
+✉️ ➡️ 🚶 💬
+📢 ➡️ 👥 👥 👥
+🏪 🏪 🏪 🏪
+🗂️ 🛒 💳 🚚
+🧬 🗄️ 🧬 🗄️
+👩‍💻 🤝 🛠️ ♾️
+🪪 🚪 ✅
+🎟️ 🔑 🚗
+🔖 ✍️ ✅
+🤝 📜 📜 🔐
+🛡️ 🚪 🪪 🚪 🪪
+🔐 🗝️
+📜 🚦 ✅`.split('\n');D.forEach((c,i)=>c.s=SCN[i]);
+const GR=[['Foundations',0,8],['Delivery',9,12],['Layers',13,17],['Infrastructure',18,21],['Communication',22,25],['Patterns',26,31],['Micro & Security',32,42]];
+const BG=[['Secrets Vault','Developers hard-coded the payment API key inside the source code.','Move it into a secrets vault and rotate it'],['API Gateway','A public API has no rate limiting, so bots hammer it all night.','Add rate limiting at the API gateway'],['API Gateway','The API gateway now holds all the business logic and slows everything down.','Keep the gateway thin; move logic into services'],['Asynchronous Messaging','The team made every call asynchronous, even a simple price lookup, and debugging is a nightmare.','Use sync calls where an instant answer is needed'],['mTLS','Internal services talk to each other in plain text.','Enable mTLS between services'],['Saga Pattern','A saga step failed during compensation and nobody handled it. Orders are stuck half-done.','Plan for and retry failed compensating steps'],['Microservice','A 2-person team with no DevOps skills split a tiny app into 20 microservices.','Stay with a simple monolith for now'],['Database per Service','Two services read and write the same database tables directly.','Give each service its own database and talk via APIs'],['Circuit Breaker','Service A keeps retrying a dead Service B and now A is crashing too.','Add a circuit breaker so A fails fast'],['Zero Trust','An attacker got into one internal service and roamed freely to all the others.','Verify every request and segment the network']];
+const BN=['Gigachad_Gary','NPC_Nora','SigmaSam','DebugQueen','ByteMeBro','Kubernetes_Kev','Rizz_API_Rita','Fabio_404','OAuth_Ollie'];
+</script>
+<script type="text/plain" id="cd-spi">
+const D=`🩹|Software Process Improvement|Improving how software is developed and maintained, instead of blaming people after the fact.|Fixing the recipe instead of scolding the cook.
+🔁|Measure-Analyze-Improve|The core SPI cycle: measure how you work, analyze the data, improve, then repeat.|A fitness tracker: weigh in, review, adjust, repeat.
+💥|Process Failure|Disasters from poor requirements, testing, risk management, deployment or monitoring are usually process failures, not one developer’s fault.|A bridge collapse traced to a skipped inspection routine.
+⏰|Time and Cost Pressure|Pressure that pushes a product out early, before it is ready.|Pulling a cake out of the oven too soon.
+🏃|Developer’s Paradox|Logging feels slow, but discipline makes you faster over time through less rework and better estimates.|Warming up feels slow but saves you from injury.
+🧍|PSP|Personal Software Process: a structure for one engineer to measure and improve their own work, for better estimates and fewer defects.|A personal fitness diary for your coding.
+⏱️|Time Log|A structured form tracking the time spent in each phase.|A stopwatch receipt for every task.
+🐞|Defect Log|Records every mistake with its type and when it was injected and fixed.|A doctor’s chart of every illness you have had.
+📑|Project Plan Summary|The final report card: the Estimated column is filled in planning, Actual and Error in the postmortem.|A school report card comparing goals to results.
+🏁|Postmortem|The last PSP phase (after Planning, Design, Code, Compile, Test): calculate your final error rate and compare plan to reality.|Watching the match tape after the game.
+🗃️|Defect Types|Categories in the defect log: syntax, logical, interface, data and documentation.|Sorting rubbish into labelled bins.
+0️⃣|PSP0|Level that adds measurement: phases, time log, defect log, then a coding standard, size measure and process improvement plan (PIP).|Learning to use the ruler.
+1️⃣|PSP1|Level that adds estimating and planning from your own past data.|Using last year’s receipts to plan this year’s budget.
+2️⃣|PSP2|Level that adds quality management: design review and code review phases to catch defects early.|Proofreading before you print.
+🔮|PROBE|PROxy-Based Estimation: break the program into parts, size each from your history, add them up, then use your size-to-time ratio for effort.|Estimating a trip by adding up legs you have driven before.
+📈|Earned Value|A way to track progress by the planned value of the tasks you have completed.|Paying a builder for each finished room.
+📏|Size Error|(Actual - Estimated) / Estimated. For example 260 LOC against 200 LOC is +30%.|Missing a target and measuring by how much.
+📉|Defect Density|Defects injected per 1,000 lines of code (KLOC).|Typos per page of a book.
+🥅|Yield|Percent of defects removed before the first compile and test: removed divided by injected.|A net that catches fish before they leave the river.
+🔎|Appraisal COQ|Cost of quality spent on design and code reviews.|Checking your bags before the flight.
+🔥|Failure COQ|Cost of quality spent in compile and test fixing defects.|Repairing a car after it breaks down.
+⚖️|A/FR|Appraisal time divided by failure time. A high ratio means you pay for quality early.|Prevention versus cure.
+👥|TSP|Team Software Process: extends PSP to a team, building a plan from members’ real personal data.|A relay team using each runner’s recorded times.
+🧭|Self-Directed Team|A team that makes its own plan and owns its commitments, guided by a trained coach.|A sports team picking its plays with a coach on the sideline.
+🚀|TSP Launch|A 3 to 4 day series of meetings: goals, roles, strategy, plan, quality plan and risks, then presenting to management and negotiating.|The mission briefing before takeoff.
+🎖️|TSP Roles|Team leader, development manager, planning manager, quality/process manager and support manager.|Positions on a football team.
+🔄|TSP Cycle|Launch, Strategy, Plan, Requirements, Design, Implementation, Test, Postmortem, then a relaunch.|Season after season, learning each time.
+🛡️|Built-in Quality|Quality goals are set up front, and reviews and inspections remove defects early.|Building safety rails into the stairs, not adding them later.
+🏢|CMM|Capability Maturity Model: rates how mature an organization’s software process is, on five levels.|Belt ranks in karate.
+🦸|Level 1 Initial|Ad hoc and chaotic; success depends on individual heroes.|A kitchen that only works when the star chef is in.
+🔂|Level 2 Repeatable|Basic project management so earlier successes can be repeated (called Managed in CMMI).|Following a recipe card that worked before.
+📘|Level 3 Defined|The process is documented and standardized across the whole organization.|A company-wide handbook.
+📊|Level 4 Quantitative|Quantitatively Managed: the process is measured and controlled with data.|A cockpit full of gauges.
+🌱|Level 5 Optimizing|Continuous improvement driven by data and defect prevention.|A factory that keeps upgrading its own machines.
+📋|CMMI|Tells organizations what to do, not how; organized into process areas such as Organizational Process Focus.|The rules of a game, not the tactics.
+🕵️|SCAMPI|The most notable appraisal method used to check CMMI compliance.|A health inspector’s visit.
+🧗|IDEAL|SEI life cycle for improvement programs: Initiating, Diagnosing, Establishing, Acting, Learning.|A GPS route for the improvement journey.
+🤝|Initiating|IDEAL phase that lays groundwork and wins management support.|Getting the boss’s blessing first.
+🩺|Diagnosing|IDEAL phase that finds where you are and where you want to be, model-based or analytical.|A medical checkup.
+📝|Establishing|IDEAL phase that prioritizes problems and plans the work.|Picking the top 3 fixes and assigning owners.
+🛠️|Acting|IDEAL phase where you do the work, such as piloting a new review process on one project.|Test-driving the new tool.
+🎓|Learning|IDEAL phase that evaluates results and feeds them back into the next cycle.|Reviewing your exam to prepare for the next one.
+♻️|PDCA|Plan-Do-Check-Act: Shewhart’s learning cycle, the idea behind IDEAL.|Cook, taste, adjust.
+🎯|GQM|Goal-Question-Metric: decide what to measure by starting from your goals.|Choose the destination before buying fuel.`.split('\n').map(l=>{let a=l.split('|');return{e:a[0],t:a[1],d:a[2],a:a[3]}});
+const SO=[['Appraisal COQ','Appraisal or Failure cost?','Appraisal','Failure','Design review,Code review,Reading code aloud','Fixing compile errors,Debugging in test,Rework after a failed test'],
+['Defect Density','Density or Yield?','Density','Yield','Defects per KLOC,How many defects you inject','Percent removed before compile,How good your reviews are'],
+['TSP','PSP or TSP?','PSP','TSP','One engineer,Your own defect log,Personal estimates','Team launch,Coach and roles,Combined team plan'],
+['Project Plan Summary','Estimated or Actual?','Estimated','Actual','Filled in during planning,Your forecast,Based on PROBE','Filled in at postmortem,Real minutes spent,Compared to get the error'],
+['Level 1 Initial','Level 1 or Level 3?','Level 1','Level 3','Success depends on heroes,Ad hoc and chaotic','Documented standards,Org-wide process,Not dependent on one person'],
+['Diagnosing','Model-based or Analytical?','Model-based','Analytical','Compare to CMMI,Use a reference model','Mine your defect logs,Find problems from your own data']];
+const SQ=[['Postmortem','Order the PSP phases','Planning,Design,Code,Compile,Test,Postmortem'],
+['IDEAL','Order the IDEAL phases','Initiating,Diagnosing,Establishing,Acting,Learning'],
+['PROBE','Order the PROBE steps','Break program into parts,Size each part from history,Add up the size estimate,Apply size-to-time ratio,Get the effort estimate'],
+['Level 5 Optimizing','Climb the maturity ladder','Initial,Repeatable,Defined,Quantitatively Managed,Optimizing'],
+['TSP Cycle','Order the TSP cycle','Launch,Strategy,Plan,Requirements,Design,Implementation,Test,Postmortem']];
+const SC=[['Defect Log','You keep making interface mistakes but never noticed the pattern.'],['Yield','Reviews caught 14 of the 20 defects you injected before the first compile.'],
+['PROBE','You need an estimate based on your own past data, not a guess.'],['Developer’s Paradox','Logging feels slow and a deadline is near, so you want to skip it.'],
+['TSP Launch','A team presents its realistic plan to management and negotiates.'],['Level 1 Initial','Projects only succeed when one hero developer is on the team.'],
+['Level 3 Defined','The company wrote one standard process that every project follows.'],['Level 4 Quantitative','Managers control the process using measured data.'],
+['SCAMPI','An assessor visits to check how mature the organization really is.'],['IDEAL','Leadership wants a life cycle to run an improvement program.'],
+['Initiating','You must show leadership what late releases cost to win their support.'],['Learning','After a pilot you compare defect rates before and after.'],
+['GQM','You do not know which metrics to collect and want to start from goals.'],['A/FR','Your review time is large compared to your test-and-fix time.'],
+['Process Failure','A serious defect reached customers because testing was weak.'],['Earned Value','You track progress by the planned value of finished tasks.']];
+const R=['Lost Intern','Curious Coder','Time Logger','Defect Tracker','Estimator','PROBE Pro','Review Rookie','Yield Hunter','Quality Keeper','Postmortem Pro','Team Player','Launch Lead','Coach','Level 2 Climber','Process Definer','Metrics Master','Appraisal Ace','Optimizer','Process Sage','Grand Maestro'];
+const SCN=`🩹 ➡️ 🧑‍🍳 📖
+📏 🔍 🔧 🔁
+💥 ➡️ 🏗️ ❌
+⏰ 🎂 ❌
+🏃 📝 ➡️ ⚡
+🧍 📓 ✅
+⏱️ 📝 🧍
+🐞 📒 🔍
+📑 🎯 ➡️ 🏁
+🏁 📼 🔍
+🗃️ 🐞 🗑️
+0️⃣ 📏 📓
+1️⃣ 🧾 ➡️ 📅
+2️⃣ 👀 ➡️ 🐞
+🔮 🧩 ➡️ ➕ ➡️ ⏱️
+📈 🏠 ✅ 💰
+📏 🎯 ❌ ➡️ 30%
+📉 🐞 📄
+🥅 🐟 ✅ 🌊
+🔎 🧳 ✈️
+🔥 🚗 🔧
+⚖️ 🔎 ➗ 🔥
+👥 🏃 🏃 🏃 ➡️ 🏆
+🧭 ⚽ 🧑‍🏫
+🚀 📅 🤝 📋
+🎖️ ⚽ 🧢 🥅
+🔄 🚀 ➡️ 🏁 ➡️ 🚀
+🛡️ 🪜 🔒
+🏢 🥋 5️⃣
+🦸 🏃 ❓
+🔂 📇 ✅
+📘 📚 🏢
+📊 📈 🧮
+🌱 ⚙️ ⬆️
+📋 📜 ❓
+🕵️ 🏢 ✅
+🧗 🧭 ➡️ 🏔️
+🤝 👔 ✅
+🩺 📋 🔍
+📝 🥇 🥈 🥉
+🛠️ 🧪 🔧
+🎓 📊 ➡️ 🔁
+♻️ 🍳 👅 🔧
+🎯 ❓ 📏`.split('\n');D.forEach((c,i)=>c.s=SCN[i]);
+const GR=[['Foundations',0,4],['PSP Basics',5,10],['PSP Levels',11,16],['Quality',17,21],['TSP',22,27],['CMM / CMMI',28,35],['Improvement',36,43]];
+const BG=[['Defect Log','A developer fixes bugs silently and never records them.','Log every defect with its type and phase'],['Time and Cost Pressure','Management demands an early release and testing gets cut.','Defend a realistic plan with data'],['PROBE','A developer guesses lines of code from gut feeling.','Estimate from proxies and your own history'],['Developer’s Paradox','The team skips logging because it feels slow.','Keep logging; discipline pays back in less rework'],['A/FR','All effort goes into debugging in test; reviews are skipped.','Invest in design and code reviews'],['Level 1 Initial','Success depends on one hero who may leave.','Document and standardize the process'],['TSP','A team starts TSP but nobody knows PSP.','Train engineers in PSP first'],['Process Failure','After a disaster the manager fires the developer.','Fix the process that allowed it'],['Learning','An improvement pilot ends and nobody evaluates it.','Evaluate results and feed them into the next cycle'],['CMMI','A firm expects CMMI to give step-by-step instructions.','Remember CMMI says what, and choose your own how']];
+const BN=['Gigachad_Gary','NPC_Nora','SigmaSam','DebugQueen','ByteMeBro','PROBE_Pete','CMMI_Cathy','Fabio_404','Yield_Yara'];
+</script>
+<script>
+const COURSES={"st": {"name": "Systems Quest", "full": "Systems Thinking & System Approach", "icon": "🏙️", "intro": "Learn systems thinking and the systems approach from zero. 1000 levels.", "ready": "Ready to think in systems? Pick a mission!", "hub": "Systems"}, "soa": {"name": "Service Quest", "full": "Service-Oriented Architecture", "icon": "🧩", "intro": "Learn Service-Oriented Architecture from zero. 1000 levels.", "ready": "Ready to build a city of services? Pick a mission!", "hub": "SOA"}, "spi": {"name": "Process Quest", "full": "Software Process Improvement", "icon": "📈", "intro": "Learn Software Process Improvement from zero. 1000 levels.", "ready": "Ready to level up your process? Pick a mission!", "hub": "SPI"}},SOON=[["ci", "⚙️", "Continuous Integration & Deployment"], ["kddm", "🔎", "Knowledge Discovery & Data Mining"], ["inc", "🌍", "Inclusiveness"]];
+let CID='st';try{CID=localStorage.sysq_course||'st'}catch(e){}if(!COURSES[CID])CID='st';
+const CO=COURSES[CID],KP=k=>CID=='st'?k:k+'_'+CID,SKEY=KP('sysq'),LKEY=KP('sysq_league'),BKEY=KP('sysq_board');
+document.title=CO.name;
+const THEMES=[['classic','🎖️','Rank colors',null],
+['ocean','🌊','Ocean',{ink:'#10203a',paper:'#eef3f7',line:'#c9d5e2',ac:'hsl(200 80% 38%)',acf:'hsl(200 80% 44%)'}],
+['forest','🌲','Forest',{ink:'#12301f',paper:'#eef6ee',line:'#c7dccb',ac:'hsl(145 60% 28%)',acf:'hsl(145 55% 38%)'}],
+['sunset','🌅','Sunset',{ink:'#3a1a10',paper:'#fff1e8',line:'#f0d2c0',ac:'hsl(16 85% 42%)',acf:'hsl(16 90% 52%)'}],
+['grape','🍇','Grape',{ink:'#26134a',paper:'#f3eefc',line:'#d8cbef',ac:'hsl(268 60% 42%)',acf:'hsl(268 65% 52%)'}],
+['candy','🍬','Candy',{ink:'#4a1030',paper:'#ffeef6',line:'#f4cbe0',ac:'hsl(332 75% 44%)',acf:'hsl(332 80% 55%)'}],
+['mono','⚪','Mono',{ink:'#111111',paper:'#f3f3f3',line:'#d6d6d6',ac:'#333333',acf:'#444444'}],
+['night','🌙','Night',{ink:'#e6edf8',paper:'#0e1522',line:'#1f2b40',ac:'hsl(190 80% 62%)',acf:'hsl(190 70% 42%)'}]];
+const dayHash=()=>{let h=7;for(const c of new Date().toISOString().slice(0,10))h=(h*31+c.charCodeAt(0))>>>0;return Math.imul(h,2654435761)>>>0};
+const themeChoice=()=>{try{return localStorage.sysq_theme||'auto'}catch(e){return'auto'}};
+const themeId=()=>{let c=themeChoice();if(c=='auto'){let L=THEMES.filter(t=>t[0]!='classic');return L[(dayHash()>>>4)%L.length][0]}return c};
+function applyTheme(){let id=themeId(),t=THEMES.find(x=>x[0]==id)||THEMES[0],r=document.documentElement;
+['ink','paper','line','ac','acf'].forEach(k=>r.style.removeProperty('--'+k));r.dataset.theme=id;
+if(t[3])for(const k in t[3])r.style.setProperty('--'+k,t[3][k])}
+applyTheme();
+const BOTNAMES=['Zorp','Bolt','Pixel','Sprocket','Widget','Gizmo','Nova','Chip','Rusty','Beep','Orbit','Turbo','Fizz','Cogsworth','Blip','Ziggy','Dot','Kilo','Ohm','Byte','Clank','Sparky','Echo','Tango','Waffles','Jinx','Mochi','Rex','Vector','Ping'];
+const BOTPAL=[['Aqua','#ffffff','#2fb7d6','#ffc83d'],['Sunburst','#fff4c2','#ff7a59','#2fb7d6'],['Mint','#e6ffe9','#2fb36d','#ff5d73'],['Grape','#f3e8ff','#7b61ff','#ffc83d'],['Bubblegum','#ffe8f1','#ff5d9e','#7b61ff'],['Midnight','#e8f4ff','#10203a','#3ddc97'],['Honey','#ffffff','#f0b429','#ff5d73'],['Steel','#e9e9e9','#555555','#2fb7d6']];
+const BOTACC=['bare-metal','cap','bow tie','nerd glasses','headphones','crown','shades','party hat'];
+const ACCSVG=['',
+'<path d="M18 30Q40 6 62 30Z" fill=#e0405a stroke=#10203a stroke-width=2 /><rect x=14 y=29 width=36 height=5 rx=2 fill=#e0405a stroke=#10203a stroke-width=2 />',
+'<path d="M40 70L28 63V77ZM40 70L52 63V77Z" fill=#e0405a stroke=#10203a stroke-width=2 />',
+'<circle cx=32 cy=38 r=8 fill=none stroke=#10203a stroke-width=2.5 /><circle cx=48 cy=38 r=8 fill=none stroke=#10203a stroke-width=2.5 /><path d="M40 38H40" stroke=#10203a stroke-width=2.5 />',
+'<path d="M15 44Q15 14 40 14Q65 14 65 44" fill=none stroke=#10203a stroke-width=4 /><rect x=9 y=38 width=9 height=17 rx=4 fill=#e0405a stroke=#10203a stroke-width=2 /><rect x=62 y=38 width=9 height=17 rx=4 fill=#e0405a stroke=#10203a stroke-width=2 />',
+'<path d="M26 20L29 6L36 14L40 3L44 14L51 6L54 20Z" fill=#ffc83d stroke=#10203a stroke-width=2 />',
+'<rect x=21 y=32 width=38 height=12 rx=5 fill=#10203a stroke=#fff stroke-width=1 />',
+'<path d="M29 21L40 2L51 21Z" fill=#ff5d9e stroke=#10203a stroke-width=2 /><circle cx=40 cy=3 r=3 fill=#ffc83d />'];
+function robot(){let h=dayHash(),p=BOTPAL[(h>>>3)%BOTPAL.length],a=(h>>>9)%BOTACC.length,dark=p[2]=='#10203a'||p[2]=='#555555';
+return{name:BOTNAMES[h%BOTNAMES.length],sh:p[1],fc:p[2],ball:p[3],acc:a,eye:dark?'#9ff3ff':'#10203a',look:p[0]+' '+BOTACC[a]}}
+const mkBot=(m='',w=84)=>{let r=robot();return`<svg id=bot class="bot ${m}" viewBox="0 0 80 90" width=${w} style="flex:none;cursor:pointer"><path d="M40 4V18M14 62L6 80M66 62L74 80M40 66V82" stroke=#10203a stroke-width=3 stroke-linecap=round /><circle cx=40 cy=6 r=5 fill=${r.ball} stroke=#10203a stroke-width=2 /><circle cx=6 cy=82 r=4 fill=#fff stroke=#10203a stroke-width=2 /><circle cx=74 cy=82 r=4 fill=#fff stroke=#10203a stroke-width=2 /><circle cx=40 cy=84 r=4 fill=#fff stroke=#10203a stroke-width=2 /><circle cx=40 cy=42 r=26 fill=${r.sh} stroke=#10203a stroke-width=3 /><circle cx=40 cy=42 r=20 fill=${r.fc} /><g class=eyes><circle cx=32 cy=38 r=4.5 fill=${r.eye} /><circle cx=48 cy=38 r=4.5 fill=${r.eye} /></g><path d="${m=='sad'?'M32 54Q40 47 48 54':'M32 49Q40 57 48 49'}" stroke=${r.eye} stroke-width=3 fill=none stroke-linecap=round />${ACCSVG[r.acc]}</svg>`};
+
+{let s=document.createElement('script');s.text=document.getElementById('cd-'+CID).textContent;document.head.appendChild(s)}
+</script>
+<script>
+
+const $=s=>document.querySelector(s),A=$('#a');
+let S;try{S=JSON.parse(localStorage[SKEY])}catch(e){}S=S||{lv:1,xp:0,st:{},seen:0};
+const sv=()=>{try{S.k=ck(S);localStorage[SKEY]=JSON.stringify(S)}catch(e){}},rk=c=>Math.min(19,c/50|0),U=n=>Math.min(D.length,3+((n-1)/5|0)),
+sh=a=>[...a].sort(()=>Math.random()-.5),hs=n=>(Math.imul(n,2654435761)>>>8),
+sets=(a,u)=>a.filter(s=>D.findIndex(d=>d.t==s[0])<u),
+hue=()=>document.documentElement.style.setProperty('--h',rk(S.lv-1)*17+190);
+function rng(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+var al=n=>{let u=U(n);return['def',...n>1?['rev']:[],...n>2?['ana']:[],...n>4?['tf']:[],...n>7?['match']:[],...n>11&&sets(SO,u).length?['sort']:[],...n>14&&sets(SC,u).length?['scen']:[],...n>19&&sets(SQ,u).length?['seq']:[]]};
+const tp=n=>{let a=al(n);return a[hs(n)%a.length]},ty=n=>{let a=al(n),t=tp(n);return n>1&&a.length>1&&t==tp(n-1)?a[(hs(n)+1)%a.length]:t};
+function ok(E,m,cb,msg){let d=document.createElement('div');d.innerHTML=`<div class=card>✅ ${msg}</div><button class=p>Continue</button>`;E.append(d);d.querySelector('button').onclick=()=>cb(m)}
+function mcq(E,cb,p,a,w,why,z){let m=0,o=z?['True','False']:sh([a,...w]);E.innerHTML=`<div class=card>${p}</div><div id=o></div>`;
+o.forEach(x=>{let b=document.createElement('button');b.innerHTML=x;b.onclick=()=>{if(x==a){b.className='ok';$('#o').classList.add('x');ok(E,m,cb,why)}else{m++;b.className='no x'}};$('#o').append(b)})}
+function match(E,cb,g,key){let m=0,s=null,left=g.length;E.innerHTML=`<div class=card>Match each concept with its partner. Tap one, then the other.</div><div class=row><div id=l></div><div id=r></div></div>`;
+[0,1].forEach(side=>sh(g).forEach(x=>{let b=document.createElement('button');b.innerHTML=side?x[key]:x.e+' '+x.t;b.x=x;b.s=side;b.onclick=()=>{
+if(!s||s.s==side){s&&s.classList.remove('sel');s=b;b.classList.add('sel');return}
+if(s.x==x){s.className=b.className='ok x';s=null;if(!--left)ok(E,m,cb,'All matched!')}else{m++;b.classList.add('no');setTimeout(()=>b.classList.remove('no'),400);s.classList.remove('sel');s=null}};$(side?'#r':'#l').append(b)}))}
+function sort(E,cb,s,n,r){let k=Math.min(8,4+(n/100|0)),it=sh([...s[4].split(',').map(x=>[x,0]),...s[5].split(',').map(x=>[x,1])]).slice(0,k),i=0,m=0;
+(function nx(){if(i==it.length){E.innerHTML='';return ok(E,m,cb,'Sorted! '+s[1])}
+E.innerHTML=`<div class=card><small>${s[1]} · ${i+1}/${it.length}</small><h2>${it[i][0]}</h2></div><div class=row><button>${s[2]}</button><button>${s[3]}</button></div>`;
+E.querySelectorAll('.row button').forEach((b,j)=>b.onclick=()=>{if(j==it[i][1]){i++;nx()}else{m++;b.classList.add('no')}})})()}
+function seq(E,cb,s){let st=s[2].split(','),i=0,m=0;E.innerHTML=`<div class=card>${s[1]}<br><small>Tap the steps in order, first to last.</small></div><div id=o></div>`;
+sh(st).forEach(x=>{let b=document.createElement('button');b.textContent=x;b.onclick=()=>{if(x==st[i]){i++;b.className='ok x';b.textContent=i+'. '+x;if(i==st.length)ok(E,m,cb,'Perfect order! 🎯')}else{m++;b.classList.add('no');setTimeout(()=>b.classList.remove('no'),400)}};$('#o').append(b)})}
+function Q0(t,n,r,pool,cb){let u=pool.length,E=$('#q'),f=FF(pool,r,n),o=Math.min(5,3+n/150|0),
+ot=(k,x=f)=>sh(pool.filter(y=>y!=x)).slice(0,k),w=k=>ot(k).map(x=>x.t),why=`${f.e} <b>${f.t}</b>: ${f.a}`,pk=a=>a[r()*a.length|0];
+if(t=='def')mcq(E,cb,`${pk(['Which concept is this?','Byte describes a concept. Name it:','Guess the idea from its job description:','Who am I?'])}<br><b>${f.d}</b>`,f.t,w(o-1),why);
+if(t=='rev')mcq(E,cb,pk([`What does <b>${f.t}</b> mean?`,`Pick the best definition of <b>${f.t}</b>`,`You meet <b>${f.t}</b> at work. What is it?`]),f.d,ot(o-1).map(x=>x.d),why);
+if(t=='ana')mcq(E,cb,`${pk(['Which concept is like this?','Which idea does this analogy describe?','Decode the analogy:'])}<br><i>${f.a}</i>`,f.t,w(o-1),why);
+if(t=='tf'){let y=r()<.5,x=ot(1)[0];mcq(E,cb,`${pk(['True or false?','Fact or fiction?','Trust or bust:'])}<br><b>${f.t}</b>: ${y?f.d:x.d}`,y?'True':'False',[],y?why:`That is really <b>${x.t}</b>. ${why}`,1)}
+if(t=='match')match(E,cb,[f,...ot(Math.min(5,3+(n/100|0))-1)],n%2?'a':'d');
+if(t=='sort')sort(E,cb,pk(sets(SO,u)),n,r);
+if(t=='seq')seq(E,cb,pk(sets(SQ,u)));
+if(t=='scen'){let s=pk(sets(SC,u)),c=D.find(x=>x.t==s[0]);mcq(E,cb,`🧩 Scenario<br><b>${s[1]}</b><br>Which concept fixes it?`,c.t,ot(o-1,c).map(x=>x.t),`${c.e} <b>${c.t}</b>: ${c.d}`)}}
+function les(i,cb,tx){let c=D[i];A.innerHTML=`<div class="card c"><small>${tx}</small><div class=big>${c.e}</div><h1 class=ac>${c.t}</h1><p>${c.d}</p><button id=rv class=c>👀 Tap to see it in real life</button><div id=an></div></div><button class=p id=ct>Got it</button>`;
+$('#rv').onclick=()=>$('#an').innerHTML=`<p>💡 <i>${c.a}</i></p>`;$('#ct').onclick=cb}
+function lessons(i,u,done){i>=u?done():les(i,()=>lessons(i+1,u,done),`New concept ${i+1} of ${D.length}`)}
+function play(n){let u=U(n);S.seen<u?lessons(S.seen,u,()=>{S.seen=u;sv();run(n)}):run(n)}
+function run(n){let r=rng(n*977+3),pool=D.slice(0,U(n)),boss=n%10==0,qs=boss?(n%100?5:8):1+(n>=300)+(n>=600),m=0,i=0,last='',a=al(n);
+A.innerHTML=`<div class=row><button id=bk style="flex:0">←</button><div><b class=ac>Level ${n}</b> ${boss?'👑 BOSS':''} <small>${R[rk(n-1)]}</small><div class=bar><i id=pg></i></div></div></div><div id=q></div>`;
+$('#bk').onclick=home;
+(function nx(){$('#pg').style.width=i/qs*100+'%';if(i==qs)return fin(n,m,qs,boss);
+let t=PT(a,last);last=t;Q(t,n,r,pool,x=>{m+=x;i++;nx()})})()}
+function fin(n,m,qs,boss){let s=m?m<=qs?2:1:3,xp=10+s*5+(boss?30:0),k0=rk(S.lv-1);
+if(n==S.lv){S.lv=Math.min(1001,n+1);S.xp+=xp}else xp=0;S.st[n]=Math.max(S.st[n]||0,s);sv();hue();let k1=rk(S.lv-1);
+A.innerHTML=`<div class=big>${'⭐'.repeat(s)}</div><h1 class=c>Level ${n} cleared!</h1><div class="card c">${xp?'+'+xp+' XP':'Replay: stars only'}${k1>k0?`<h2 class=ac>🎉 RANK UP: ${R[k1]}</h2>`:`<br><small>${R[k1]} · ${S.lv-1}/1000 cleared</small>`}</div><button class=p id=nx>Next level ▶</button><button id=hm>Home</button>`;
+$('#nx').onclick=()=>play(Math.min(n+1,S.lv,1000));$('#hm').onclick=home}
+function map(p){let b='';for(let n=p*50+1;n<=p*50+50;n++)b+=`<button data-n=${n} ${n>S.lv?'class=x':''}>${n>S.lv?'🔒':n}<br><small>${'★'.repeat(S.st[n]||0)}</small></button>`;
+A.innerHTML=`<h2 class=ac>${R[p]}</h2><small>Levels ${p*50+1}-${p*50+50}</small><div class="g card">${b}</div><div class=row><button id=pv>◀</button><button id=nt>▶</button></div><button id=hm>Home</button>`;
+A.querySelectorAll('[data-n]').forEach(x=>x.onclick=()=>play(+x.dataset.n));$('#pv').onclick=()=>map(Math.max(0,p-1));$('#nt').onclick=()=>map(Math.min(19,p+1));$('#hm').onclick=home}
+function codex(){A.innerHTML=`<h2 class=ac>📖 Codex</h2><small>Concepts you have learned (${S.seen}/${D.length})</small>`+D.slice(0,S.seen).map((c,i)=>`<button data-i=${i}>${c.e} ${c.t}</button>`).join('')+`<button class=p id=hm>Home</button>`;
+A.querySelectorAll('[data-i]').forEach(x=>x.onclick=()=>les(+x.dataset.i,codex,'Codex'));$('#hm').onclick=home}
+function home(){hue();let c=S.lv-1,k=rk(c);
+A.innerHTML=`<div class=big>🏙️</div><h1 class=c>${CO.name}</h1><p class=c><small>${CO.intro}</small></p>
+<div class=card><h2 class=ac>${R[k]}</h2><small>Rank ${k+1}/20 · ${c} cleared · ${S.xp} XP</small><div class=bar><i style="width:${c%50*2}%"></i></div><small>${c>=1000?'Legend complete!':50-c%50+' levels to '+R[k+1]}</small></div>
+<button class=p id=pl>▶ ${c?'Play':'Start'} level ${Math.min(S.lv,1000)}</button><div class=row><button id=mp>🗺 Map</button><button id=cx>📖 Codex</button></div><button id=rs><small>Reset progress</small></button>`;
+$('#pl').onclick=()=>play(Math.min(S.lv,1000));$('#mp').onclick=()=>map(k);$('#cx').onclick=codex;
+$('#rs').onclick=()=>{if(confirm('Erase all progress?')){S={lv:1,xp:0,st:{},seen:0};sv();home()}}}
+</script>
+<script>
+function ck(s){let t=[s.lv,s.xp,s.seen,JSON.stringify(s.st)].join('|'),h=5381;for(const c of t)h=(h*33^c.charCodeAt(0))>>>0;return h^48611}
+let MSG='';if(S.k!==undefined&&S.k!==ck(S)){S={lv:1,xp:0,st:{},seen:0};MSG='🚫 The save file was edited, so progress was reset. Earn it fair and square!'}
+S.day=S.day||{};S.fc=S.fc||{};S.streak=S.streak||0;
+
+
+const T=()=>new Date().toISOString().slice(0,10),day=()=>S.day[T()]=S.day[T()]||{xp:0,lv:0,r:0,w:0,c:0,f:0};
+var xp=n=>{S.xp+=n;day().xp+=n;goalChk()};
+function touch(){let t=T();if(S.last==t)return;let y=new Date(Date.now()-864e5).toISOString().slice(0,10);S.streak=S.last==y?S.streak+1:1;S.last=t;let b=25+Math.min(S.streak,10)*5;xp(b);MSG=`🔥 Day ${S.streak} streak! +${b} XP daily bonus`;sv()}
+const bot=mkBot;
+function typ(el,t){let i=0;clearInterval(el.t);el.t=setInterval(()=>{el.textContent=t.slice(0,++i);if(i>=t.length)clearInterval(el.t)},16)}
+const sc=c=>c.s.split(' ').map((x,j)=>`<span style="animation-delay:${j*.3}s">${x}</span>`).join('');
+const vid=c=>`<a class=lk target=_blank rel=noopener href="https://www.youtube.com/results?search_query=${encodeURIComponent(c.t+' explained simply systems thinking')}">🎬 Watch videos (needs internet)</a>`;
+document.addEventListener('click',e=>{let b=e.target.closest('button'),o=$('#bot');if(!b||!o||!$('#q'))return;setTimeout(()=>{let c=b.className,k=/\bno\b/.test(c)?'sad':/\bok\b/.test(c)?'happy':'';if(k)o.setAttribute('class','bot '+k)},0)});
+function les(i,cb,tx){let c=D[i],st=0,say=[`Hi, I'm Byte! Meet ${c.t}. ${c.d}`,`Picture it: ${c.a}`,`Remember: ${c.t} = ${c.d.split('.')[0]}.`];
+A.innerHTML=`<small>${tx}</small><div class=card><div class=talk>${bot()}<div class=bub id=bb></div></div><div class="sc c" id=sc></div><h2 class="c ac">${c.e} ${c.t}</h2></div>${vid(c)}<button class=p id=ct></button>`;
+const go=()=>{typ($('#bb'),say[st]);$('#sc').innerHTML=st==1?sc(c):`<span>${c.e}</span>`;$('#ct').textContent=st<2?'Next ▶':'Got it ✔'};
+$('#ct').onclick=()=>st<2?(st++,go()):cb();go()}
+function play(n){touch();let u=U(n);S.seen<u?lessons(S.seen,u,()=>{xp((u-S.seen)*15);day().c+=u-S.seen;S.seen=u;sv();run(n)}):run(n)}
+function run(n){let prac=n<S.lv,boss=n%10==0,qs=boss?(n%100?5:8):1+(n>=300)+(n>=600),pool=D.slice(0,U(n)),a=al(n),last='',pen='';
+if(!prac){if(S.cur&&S.cur.n==n){S.cur.m++;pen='⚠️ You left this level earlier: +1 mistake logged. No fresh restarts!'}else S.cur={n,m:0,i:0};sv()}
+let m=prac?0:S.cur.m,i=prac?0:S.cur.i;
+A.innerHTML=`<div class=row><button id=bk style="flex:0">←</button><div><b class=ac>Level ${n}</b> ${boss?'👑 BOSS':''} <small>${prac?'practice: no XP, saved result locked':R[rk(n-1)]}</small><div class=bar><i id=pg></i></div></div>${bot()}</div>${pen?`<div class=card>${pen}</div>`:''}<div id=tn></div><div id=q></div>`;
+$('#bk').onclick=()=>{if(prac||confirm('Leaving keeps your mistakes and you cannot restart this level fresh. Leave?')){if(!prac)MSG=say('l',.8)||MSG;home()}};
+(function nx(){$('#pg').style.width=i/qs*100+'%';if(i>=qs)return fin(n,m,qs,boss,prac);
+let r=rng(n*977+3+i*131),t=PT(a,last);last=t;
+Q(t,n,r,pool,x=>{m+=x;i++;if(!prac){S.cur.m=m;S.cur.i=i;sv()}nx()})})()}
+function fin(n,m,qs,boss,prac){let s=m?m<=qs?2:1:3,k0=rk(S.lv-1),g=0;
+if(!prac){g=40+s*20+(boss?150:0)+(s==3?20:0);S.cur=null;S.lv=Math.min(1001,n+1);S.st[n]=s;xp(g);let d=day();d.lv++;d.r+=Math.max(0,qs-m);d.w+=m}
+sv();hue();let k1=rk(S.lv-1);
+A.innerHTML=`<div class=talk>${bot(s>1?'happy':'sad')}<div class=bub>${prac?'Practice done. Your saved result stays locked.':s==3?'FLAWLESS! Zero mistakes!':'Cleared! Study the Codex and aim for 3 stars next time.'}</div></div><div class=big>${prac?'🏋️':'⭐'.repeat(s)}</div><h1 class=c>Level ${n} ${prac?'practiced':'cleared!'}</h1><div class="card c">${g?`+${g} XP`:'No XP on replays'}${k1>k0?`<h2 class=ac>🎉 RANK UP: ${R[k1]}</h2>`:`<br><small>${R[k1]} · ${S.lv-1}/1000 cleared</small>`}</div><button class=p id=nx>Next level ▶</button><button id=hm>Home</button>`;
+$('#nx').onclick=()=>play(Math.min(prac?n+1:S.lv,S.lv,1000));$('#hm').onclick=home}
+function fcs(q){q=q||D.slice(0,S.seen).map((c,i)=>i).filter(i=>!S.fc[i]||S.fc[i].d<=Date.now());
+if(!q.length){A.innerHTML=`<div class=talk>${bot('happy')}<div class=bub>All caught up! Come back later: cards you know return on a schedule.</div></div><button class=p id=hm>Home</button>`;return $('#hm').onclick=home}
+let i=q[0],c=D[i],f=S.fc[i]||{b:0,d:0};
+A.innerHTML=`<h2 class=ac>🃏 Flashcards</h2><small>${q.length} left · swipe right = I remember, left = I don't</small><div id=dk><div class=fc id=cd><div class=big>${c.e}</div><h2 class=c>${c.t}</h2><p class=c id=an><small>Tap the card to peek</small></p></div></div><div class=row><button id=no>❌ Don't know</button><button id=yes>✅ Remember</button></div><button id=hm>Home</button>`;
+const cd=$('#cd');let x0=null,dx=0;
+const jd=r=>{cd.style.transition='.3s';cd.style.transform=`translateX(${r?500:-500}px) rotate(${r?25:-25}deg)`;setTimeout(()=>{
+if(r){f.b=Math.min(5,f.b+1);f.d=Date.now()+[0,1,2,4,8,16][f.b]*864e5;S.fc[i]=f;let d=day();d.f=d.f||0;d.fk=d.fk||{};if(!d.fk[i]){d.fk[i]=1;d.f++;xp(8)}sv();fcs(q.slice(1))}
+else{f.b=0;f.d=0;S.fc[i]=f;sv();teach(i,[...q.slice(1),i])}},250)};
+cd.onpointerdown=e=>{x0=e.clientX;cd.setPointerCapture(e.pointerId);cd.style.transition='none'};
+cd.onpointermove=e=>{if(x0==null)return;dx=e.clientX-x0;cd.style.transform=`translateX(${dx}px) rotate(${dx/15}deg)`;cd.style.borderColor=dx>40?'#0b6b3a':dx<-40?'#d6304a':''};
+cd.onpointerup=()=>{if(x0==null)return;x0=null;if(dx>90)jd(1);else if(dx<-90)jd(0);else{if(Math.abs(dx)<6)$('#an').innerHTML=`<b>${c.d}</b>`;cd.style.transition='.2s';cd.style.transform='';cd.style.borderColor=''}dx=0};
+$('#yes').onclick=()=>jd(1);$('#no').onclick=()=>jd(0);$('#hm').onclick=home}
+function teach(i,q){let c=D[i];A.innerHTML=`<div class=card><div class=talk>${bot('sad')}<div class=bub>No worries! ${c.t}: ${c.d}<br>💡 ${c.a}</div></div><div class="sc c">${sc(c)}</div></div>${vid(c)}<button class=p id=nx>Got it, next card</button>`;$('#nx').onclick=()=>fcs(q)}
+function mm(){let s='',L='';GR.forEach(([n,a,b],gi)=>{let an=gi/7*6.283-1.571,bx=Math.cos(an)*135,by=Math.sin(an)*135,h=gi*50,k=b-a+1;
+s+=`<line x1=0 y1=0 x2=${bx} y2=${by} stroke="hsl(${h} 70% 55%)" stroke-width=4 />`;
+for(let j=0;j<k;j++){let la=an+(j-(k-1)/2)*.19,r=225+(j%2)*65,x=Math.cos(la)*r,y=Math.sin(la)*r,i=a+j,ok=i<S.seen;
+s+=`<line x1=${bx} y1=${by} x2=${x} y2=${y} stroke="hsl(${h} 70% 55%)" opacity=.4 />`;
+L+=`<g ${ok?`data-i=${i} style="cursor:pointer"`:'opacity=.35'}><circle cx=${x} cy=${y} r=19 fill="hsl(${h} 60% 30%)" stroke="hsl(${h} 80% 65%)" /><text x=${x} y=${y+6} text-anchor=middle font-size=17>${ok?D[i].e:'🔒'}</text><text x=${x} y=${y+33} text-anchor=middle font-size=10 fill=#efeaff>${ok?D[i].t.slice(0,13):'?'}</text></g>`}
+L+=`<g><rect x=${bx-48} y=${by-13} width=96 height=26 rx=13 fill="hsl(${h} 70% 45%)" /><text x=${bx} y=${by+5} text-anchor=middle font-size=11 font-weight=700>${n}</text></g>`});
+A.innerHTML=`<h2 class=ac>🧠 Mind Map</h2><small>Tap an unlocked bubble to revisit it. Locked ones open as you level up.</small><svg viewBox="-390 -390 780 780" style="width:100%;background:#fff;border-radius:18px;margin:10px 0">${s}${L}<circle r=44 fill=#8f7cff /><text y=6 text-anchor=middle font-size=20 font-weight=700>Systems</text></svg><button class=p id=hm>Home</button>`;
+A.querySelectorAll('[data-i]').forEach(g=>g.onclick=()=>les(+g.dataset.i,mm,'Mind map'));$('#hm').onclick=home}
+function dash(){let d=day(),ks=[...Array(7)].map((_,i)=>new Date(Date.now()-(6-i)*864e5).toISOString().slice(0,10)),mx=Math.max(50,...ks.map(k=>(S.day[k]||{}).xp||0)),
+bars=ks.map(k=>{let v=(S.day[k]||{}).xp||0;return`<div style="flex:1;text-align:center"><div style="height:${v/mx*90}px;background:hsl(var(--h) 85% 60%);border-radius:6px 6px 0 0;min-height:2px"></div><small>${k.slice(8)}</small></div>`}).join(''),
+acc=d.r+d.w?Math.round(d.r/(d.r+d.w)*100)+'%':'–',
+mods=GR.map(([n,a,b])=>{let p=Math.max(0,Math.min(1,(S.seen-a)/(b-a+1)));return`<small>${n} ${Math.round(p*100)}%</small><div class=bar><i style="width:${p*100}%"></i></div>`}).join(''),
+LY=[[17,'Environment'],[16,'Boundary'],[10,'Inputs and Outputs'],[11,'Transformation'],[12,'Regulation']],
+ly=LY.map(([i,n],j)=>`<g data-l=${i} style="cursor:pointer"><rect x=${20+j*12} y=${j*50+4} width=${300-j*24} height=42 rx=10 fill="hsl(${200+j*25} 55% 38%)" /><text x=170 y=${j*50+31} text-anchor=middle font-size=14>${D[i].e} ${n}</text></g>`).join('');
+A.innerHTML=`<h2 class=ac>📊 Dashboard</h2><div class=card><b>Today</b><div class=row c style="margin-top:8px"><div class=c><h2>${d.xp}</h2><small>XP</small></div><div class=c><h2>${d.lv}</h2><small>levels</small></div><div class=c><h2>${acc}</h2><small>accuracy</small></div><div class=c><h2>${d.c}</h2><small>new concepts</small></div><div class=c><h2>${d.f}</h2><small>cards</small></div></div><small>🔥 ${S.streak}-day streak · ${S.xp} XP total</small></div>
+<div class=card><b>XP, last 7 days</b><div style="display:flex;gap:6px;align-items:flex-end;margin-top:8px">${bars}</div></div><div class=card><b>Module mastery</b><br>${mods}</div>
+<div class=card><b>Infographic: a system at a glance</b><br><small>Tap a part. The environment sits outside the boundary; regulation keeps the system on course.</small><svg viewBox="0 0 340 254" style="width:100%">${ly}</svg><div id=lx class=bub style="margin-top:8px"><small>Tap a part 👆</small></div></div><button class=p id=hm>Home</button>`;
+A.querySelectorAll('[data-l]').forEach(g=>g.onclick=()=>{let c=D[+g.dataset.l];$('#lx').innerHTML=`<b>${c.e} ${c.t}</b><br>${c.d}<br>💡 ${c.a}`});$('#hm').onclick=home}
+function home(){hue();touch();let c=S.lv-1,k=rk(c),ln=1+Math.floor(Math.sqrt(S.xp/100)),m=MSG;MSG='';
+A.innerHTML=`<div class=talk>${bot()}<div class=bub>${m||CO.ready}</div></div><h1 class=c>${CO.name}</h1>
+<div class=card><div class=row><div><h2 class=ac>${R[k]}</h2><small>Rank ${k+1}/20 · ${c} cleared</small></div><div class=c><h2>Lv ${ln}</h2><small>${S.xp} XP · 🔥${S.streak}</small></div></div><div class=bar><i style="width:${c%50*2}%"></i></div><small>${c>=1000?'Legend complete!':50-c%50+' levels to '+R[k+1]}</small></div>
+<button class=p id=pl>▶ ${S.cur?'Resume':c?'Play':'Start'} level ${Math.min(S.lv,1000)}</button>
+<div class=row><button id=fc>🃏 Flashcards</button><button id=mm>🧠 Mind map</button></div><div class=row><button id=db>📊 Dashboard</button><button id=mp>🗺 Level map</button></div><div class=row><button id=cx>📖 Codex</button><button id=rs><small>Reset</small></button></div>`;
+$('#pl').onclick=()=>play(Math.min(S.lv,1000));$('#fc').onclick=()=>fcs();$('#mm').onclick=mm;$('#db').onclick=dash;$('#mp').onclick=()=>map(k);$('#cx').onclick=codex;
+$('#rs').onclick=()=>{if(confirm('Erase all progress?')){S={lv:1,xp:0,st:{},seen:0,day:{},fc:{},streak:0};sv();home()}}}
+</script><script>
+S.mc=S.mc||{};S.rc=S.rc||[];S.rt=S.rt||[];S.fz=S.fz||0;S.best=S.best||0;S.goal=S.goal||60;S.ach=S.ach||[];if(!S.sd)S.streak=0;
+let LAST,FORCE,TL=0,TC=0,LA=Date.now();
+
+const TN={w:['Skill issue 💀','Task failed successfully ✅','Not like this… 😭','Bro thinks he\'s him. He is not him.','That answer? Straight to Ohio.','L + ratio + wrong 🫡','Surely that was a misclick. Surely. 🤡','Sir, this is a Wendy\'s. Read the lesson.','Stonks 📉'],
+i:['Chat, is he AFK? 👀','Hello?? The level will not clear itself 🕷️','This is fine 🔥🐶 (your streak disagrees)','Me waiting for you: 🪑⌛','Loading brain… 404 not found'],
+r:['Your streak is on life support 🫠 Do ONE level. Surely.','Me: I\'ll study tomorrow. Tomorrow: 🤡','Gigachad Gary already hit his goal today 🗿','Is this your streak? 🦋 (it is leaving)','Don\'t let the 🔥 go out. Bare minimum. Please.'],
+l:['Why are you running? 🏃💨','Quitters never prosper (or get 3 stars).','Spider-Man pointing at Spider-Man: you and your unfinished level 🕷️🕷️'],
+s:['One star? "It\'s not much, but it\'s honest work" 🧑‍🌾','Barely passed. Is this your homework, Larry? 📝'],h:['Sigma grindset 🗿','Keep cooking 🔥👨‍🍳','Built different 🦾','W 🏆']};
+function say(k,p){let t=Date.now();if(t-TL<75e3||TC>=7||Math.random()>p)return'';TL=t;TC++;let pl=window.botPool?botPool(k):TN[k];return pl[Math.random()*pl.length|0]}
+document.addEventListener('click',e=>{LA=Date.now();let b=e.target.closest('button');if(!b)return;setTimeout(()=>{let tn=$('#tn');if(tn&&/\bno\b/.test(b.className)){let t=say('w',.25);if(t)tn.innerHTML=`<div class=card style="border-color:#d6304a">😈 ${t}</div>`}},0)});
+setInterval(()=>{let tn=$('#tn');if(tn&&Date.now()-LA>7e4){let t=say('i',1);if(t){tn.innerHTML=`<div class=card style="border-color:#d6304a">😈 ${t}</div>`;LA=Date.now()}}},1e4);
+var al=n=>{let u=U(n);return['def',...n>1?['rev']:[],...n>2?['ana']:[],...n>4?['tf']:[],...n>5?['cloze']:[],...n>7?['match']:[],...n>9?['odd']:[],...n>11&&sets(SO,u).length?['sort']:[],...n>14&&sets(SC,u).length?['scen']:[],...n>16?['multi']:[],...n>19&&sets(SQ,u).length?['seq']:[],...n>24&&sets(BG,u).length?['bug']:[],...n>29?['typed']:[],...n>34&&u>50?['sim']:[]]};
+function PT(a,last){let rt=S.rt,c=a.filter(x=>x!=last&&!rt.slice(-3).includes(x));if(!c.length)c=a.filter(x=>x!=last);if(!c.length)c=a;let t=sh(c)[0];S.rt=[...rt,t].slice(-6);return t}
+function FF(pool,r,n){if(FORCE)return LAST=FORCE;let c=pool.map((x,i)=>{let m=S.mc[x.t]||{r:0,w:0};return Math.max(.05,1+3*m.w/(m.r+m.w+1)+(i>=pool.length-6?1.5:0)-(S.rc.includes(x.t)?5:0))}),k=r()*c.reduce((a,b)=>a+b),i=0;while((k-=c[i])>0&&i<c.length-1)i++;LAST=pool[i];S.rc=[...S.rc,LAST.t].slice(-14);return LAST}
+const gi=x=>GR.find(g=>D.indexOf(x)>=g[1]&&D.indexOf(x)<=g[2]),wd=s=>s.replace(/[.,()]/g,' ').split(/\s+/).filter(w=>w.length>5);
+const N={cloze(E,cb,n,r,pool){let f=FF(pool,r,n),ws=wd(f.d).filter(w=>!f.t.toLowerCase().includes(w.toLowerCase())),k=ws[r()*ws.length|0]||'architecture',dis=[...new Set(pool.filter(x=>x!=f).flatMap(x=>wd(x.d)).filter(w=>w!=k))];
+mcq(E,cb,`Fill the blank in <b>${f.t}</b>:<br><i>${f.d.replace(k,'_____')}</i>`,k,sh(dis).slice(0,Math.min(5,3+n/150|0)-1),`${f.e} <b>${f.t}</b>: ${f.d}`)},
+odd(E,cb,n,r,pool){let f=FF(pool,r,n),g=gi(f),o=pool.filter(x=>gi(x)==g&&x!=f),out=sh(pool.filter(x=>gi(x)!=g))[0];if(o.length<2||!out)return Q0('def',n,r,pool,cb);
+let ts=[f,...sh(o).slice(0,2)];LAST=out;mcq(E,cb,`🕵️ Odd one out! Three of these belong to the topic <b>${g[0]}</b>. Who is the outsider?`,out.e+' '+out.t,ts.map(x=>x.e+' '+x.t),`${out.e} <b>${out.t}</b> belongs to a different topic. The others are all <b>${g[0]}</b>.`)},
+multi(E,cb,n,r,pool){let g=GR[r()*7|0],ins=pool.filter(x=>gi(x)==g),outs=pool.filter(x=>gi(x)!=g);if(ins.length<2||outs.length<2)return Q0('tf',n,r,pool,cb);
+let ys=sh(ins).slice(0,3),o=sh([...ys.map(x=>[x,1]),...sh(outs).slice(0,3).map(x=>[x,0])]),m=0,sel=new Set();LAST=ys[0];
+E.innerHTML=`<div class=card>✅ Select <b>ALL</b> the concepts from the topic <b>${g[0]}</b>, then press Check.</div><div id=o></div><button class=p id=ck>Check</button>`;
+o.forEach(([x])=>{let b=document.createElement('button');b.textContent=x.e+' '+x.t;b.onclick=()=>{sel.has(x)?sel.delete(x):sel.add(x);b.classList.toggle('sel')};$('#o').append(b)});
+$('#ck').onclick=()=>{if(o.some(([x,y])=>!!y!=sel.has(x))){m++;sel.clear();E.querySelectorAll('#o button').forEach(b=>b.classList.remove('sel'));$('#ck').textContent='Not quite. Try again'}else{$('#o').classList.add('x');$('#ck').remove();ok(E,m,cb,`${ys.map(x=>x.t).join(', ')} belong to ${g[0]}.`)}}},
+typed(E,cb,n,r,pool){let f=FF(pool,r,n),m=0,nz=s=>s.toLowerCase().replace(/[^a-z0-9]/g,''),t=nz(f.t);
+E.innerHTML=`<div class=card>⌨️ Type the concept name:<br><b>${f.d}</b><br><small>Hint: starts with "${f.t[0]}", ${f.t.length} characters</small></div><input id=ti autocomplete=off style="width:100%;font:inherit;padding:12px;border-radius:12px;border:2px solid #10203a;background:#fff;color:#10203a"><button class=p id=sb>Submit</button><button id=gu><small>Show answer (counts as a mistake)</small></button>`;
+const win=()=>{$('#sb').remove();$('#gu').remove();ok(E,m,cb,`${f.e} <b>${f.t}</b>: ${f.a}`)};
+$('#sb').onclick=()=>{let a=nz($('#ti').value);if(a&&(a==t||(a.length>=4&&t.startsWith(a))||(a.startsWith(t)&&a.length<=t.length+2)))win();else{m++;$('#ti').style.borderColor='#d6304a'}};$('#gu').onclick=()=>{m++;$('#ti').value=f.t;win()}},
+bug(E,cb,n,r,pool){let b=sets(BG,pool.length),x=b[r()*b.length|0],c=D.find(d=>d.t==x[0]);LAST=c;
+mcq(E,cb,`🐞 Bug hunt!<br><b>${x[1]}</b><br>What is the best fix?`,x[2],sh(BG.filter(y=>y!=x)).slice(0,Math.min(4,2+n/200|0)).map(y=>y[2]),`${c.e} <b>${c.t}</b>: ${c.d}`)},
+sim(E,cb,n,r,pool){let ev=sh([['More users make the app more popular, which brings even more users','Reinforcing'],['The room gets hot, the AC starts, and the room cools down','Balancing'],['Interest adds money to savings, which then earns more interest','Reinforcing'],['You feel hungry, you eat, and the hunger goes away','Balancing'],['Rumours spread, so more people repeat them, so they spread further','Reinforcing'],['Shelf stock runs low, staff reorder, and the shelf fills up again','Balancing']]).slice(0,5),i=0,m=0;LAST=D.find(x=>x.t=='Balancing Loop');
+(function nx(){if(i==ev.length){E.innerHTML='';return ok(E,m,cb,'Loop detective! Reinforcing loops amplify change, balancing loops counter it.')}
+E.innerHTML=`<div class=card>🔁 <b>Loop Detective</b><br>Case ${i+1}/${ev.length}: <b>${ev[i][0]}</b><br>Which kind of feedback loop is this?</div><div class=row>${['Reinforcing','Balancing'].map(s=>`<button>${s}</button>`).join('')}</div>`;
+E.querySelectorAll('.row button').forEach(b=>b.onclick=()=>{if(b.textContent==ev[i][1]){i++;nx()}else{m++;b.classList.add('no')}})})()}};
+function Q(t,n,r,pool,cb){let E=$('#q'),done=m=>{if(LAST){let z=S.mc[LAST.t]=S.mc[LAST.t]||{r:0,w:0};m?z.w++:z.r++}cb(m)};N[t]?N[t](E,done,n,r,pool):Q0(t,n,r,pool,done)}
+function goalChk(){let d=day();if(d.xp<S.goal||d.g)return;d.g=1;let y=new Date(Date.now()-864e5).toISOString().slice(0,10);S.streak=S.sd==y?S.streak+1:1;S.sd=T();S.best=Math.max(S.best,S.streak);let b=[3,7,14,30,60,100].includes(S.streak)?S.streak*5:0;
+if(b){S.xp+=b;d.xp+=b}let lb=window.LGX&&LGX.bonus||0;if(lb){S.xp+=lb;d.xp+=lb}if(S.streak%7==0)S.fz=Math.min(2,S.fz+1);MSG=`🔥 Daily goal crushed! Streak: ${S.streak} days${b?` · milestone +${b} XP`:''}${lb?` · league bonus +${lb} XP`:''}${S.streak%7==0?' · 🧊 freeze earned':''}`}
+function touch(){let t=T();if(!S.sd||S.sc==t)return;S.sc=t;let g=Math.round((Date.parse(t)-Date.parse(S.sd))/864e5);if(g>1){if(S.fz>=g-1){S.fz-=g-1;for(let i=1;i<g;i++){let k=new Date(Date.parse(t)-i*864e5).toISOString().slice(0,10);(S.day[k]=S.day[k]||{xp:0,lv:0,r:0,w:0,c:0,f:0}).fz=1}S.sd=new Date(Date.parse(t)-864e5).toISOString().slice(0,10);MSG=`🧊 A streak freeze saved your ${S.streak}-day streak!`}else{if(S.streak)MSG=`💔 Your ${S.streak}-day streak died. Start a new one today.`;S.streak=0}}sv()}
+const AC=[['first','🩸 First Blood','Clear level 1',s=>s.lv>1],['s3','🔥 Warming Up','3-day streak',s=>s.best>=3],['s7','🌋 Week Warrior','7-day streak',s=>s.best>=7],['s30','💎 Diamond Habit','30-day streak',s=>s.best>=30],['perf','🎯 Flawless','Earn a 3-star level',s=>Object.values(s.st).includes(3)],['boss','👑 Boss Slayer','Clear level 10',s=>s.lv>10],['c20','🧠 Big Brain','Learn 20 concepts',s=>s.seen>=20],['all','🎓 Full Syllabus','Learn all 64 concepts',s=>s.seen>=64],['fc','🃏 Card Shark','Remember 20 flashcards',s=>Object.keys(s.fc).filter(i=>s.fc[i].b>0).length>=20],['l50','🚀 Level 50','Clear 50 levels',s=>s.lv>50]];
+function achv(){let o='';AC.forEach(([k,n,,f])=>{if(!S.ach.includes(k)&&f(S)){S.ach.push(k);S.xp+=50;day().xp+=50;o+=` 🏅 Badge: ${n} (+50 XP)`}});return o}
+const LG=['Bronze','Silver','Gold','Sapphire','Ruby','Diamond'];
+function board(w,mine,fr){let t=S.lg||0,b=BN.map((n,i)=>({n,x:Math.round((200+t*150)*(.4+((w*31+i*17)%100)/70)*fr)}));b.push({n:'You',x:mine,me:1});return b.sort((a,b)=>b.x-a.x)}
+function wk(){let w=Math.floor(Date.now()/6048e5);if(S.wk!==w){if(S.wk!=null){let r=board(S.wk,S.xp-S.wx,1).findIndex(x=>x.me)+1;S.lg=r<=3?Math.min(5,(S.lg||0)+1):r>=8?Math.max(0,(S.lg||0)-1):S.lg||0;MSG=`🏆 Last week you finished #${r}. You are now in ${LG[S.lg]} league.`}S.wk=w;S.wx=S.xp;sv()}}
+function lgp(){wk();let b=board(S.wk,S.xp-S.wx,(Date.now()%6048e5)/6048e5);A.innerHTML=`<h2 class=ac>🏆 ${LG[S.lg||0]} League</h2><small>Weekly XP race. Top 3 rise, bottom 3 drop. Rivals grow all week, so keep earning.</small>`+b.map((x,i)=>`<div class=card style="${x.me?'border-color:#e0a800;':''}padding:10px 14px"><b>${i+1}. ${x.n}</b><span style="float:right">${x.x} XP ${i<3?'⬆️':i>=7?'⬇️':''}</span></div>`).join('')+`<button class=p id=hm>Home</button>`;$('#hm').onclick=home}
+function bdg(){A.innerHTML=`<h2 class=ac>🏅 Badges</h2><small>Each badge pays +50 XP.</small>`+AC.map(([k,n,d])=>`<div class=card style="padding:10px 14px;${S.ach.includes(k)?'':'opacity:.4'}"><b>${n}</b><br><small>${d}</small></div>`).join('')+`<button class=p id=hm>Home</button>`;$('#hm').onclick=home}
+function weak(){if(S.seen<3){MSG='Learn a few concepts first!';return home()}let ms=t=>{let z=S.mc[t]||{r:0,w:0};return(z.w+1)/(z.r+z.w+2)},L=D.slice(0,S.seen).sort((a,b)=>ms(b.t)-ms(a.t)).slice(0,5),i=0,m=0,a=['def','rev','ana','cloze','tf','typed'];
+A.innerHTML=`<div class=row><button id=bk style="flex:0">←</button><div><b class=ac>🎯 Weak-spot practice</b><div class=bar><i id=pg></i></div></div>${bot()}</div><div id=tn></div><div id=q></div>`;$('#bk').onclick=()=>{FORCE=null;home()};
+(function nx(){$('#pg').style.width=i/5*100+'%';if(i>=5){FORCE=null;let d=day(),g=d.wk<2||!d.wk?25:0;d.wk=(d.wk||0)+1;if(g)xp(g);sv();let mg=MSG;MSG='';A.innerHTML=`<div class=talk>${bot('happy')}<div class=bub>Weak spots trained! ${g?'+25 XP (max 2 sessions/day).':'No XP after 2 sessions today.'} ${mg}</div></div><button class=p id=hm>Home</button>`;return $('#hm').onclick=home}
+FORCE=L[i];Q(PT(a,''),S.lv,rng(i*7+Date.now()%997),D.slice(0,S.seen),x=>{m+=x;i++;nx()})})()}
+function fin(n,m,qs,boss,prac){let s=m?m<=qs?2:1:3,k0=rk(S.lv-1),g=0;
+if(!prac){g=40+s*20+(boss?150:0)+(s==3?20:0);S.cur=null;S.lv=Math.min(1001,n+1);S.st[n]=s;let d=day();d.lv++;d.r+=Math.max(0,qs-m);d.w+=m;xp(g)}
+let mg=MSG+achv();MSG='';sv();hue();let k1=rk(S.lv-1),tz=prac?'':s==1?say('s',.6):s==3?say('h',.3):'',d=day();
+A.innerHTML=`<div class=talk>${bot(tz&&s==1?'mad':s>1?'happy':'sad')}<div class=bub>${tz||(prac?'Practice done. Your saved result stays locked.':s==3?'FLAWLESS! Zero mistakes!':'Cleared! Study the Codex and aim for 3 stars.')}</div></div><div class=big>${prac?'🏋️':'⭐'.repeat(s)}</div><h1 class=c>Level ${n} ${prac?'practiced':'cleared!'}</h1><div class="card c">${g?`+${g} XP`:'No XP on replays'}${k1>k0?`<h2 class=ac>🎉 RANK UP: ${R[k1]}</h2>`:`<br><small>${R[k1]} · ${S.lv-1}/1000 cleared</small>`}${mg?`<br>${mg}`:''}<div class=bar><i style="width:${Math.min(100,d.xp/S.goal*100)}%"></i></div><small>Daily goal ${Math.min(d.xp,S.goal)}/${S.goal} XP</small></div><button class=p id=nx>Next level ▶</button><button id=hm>Home</button>`;
+$('#nx').onclick=()=>play(Math.min(prac?n+1:S.lv,S.lv,1000));$('#hm').onclick=home}
+function streakW(d){let t=T(),all=Object.keys(S.day).filter(k=>{let x=S.day[k];return x.g||x.fz||x.xp}).sort(),first=all[0]||t,
+D7=[...Array(7)].map((_,i)=>{let ms=Date.now()-(6-i)*864e5,k=new Date(ms).toISOString().slice(0,10),x=S.day[k]||{};return{k,x,td:k==t,w:'SMTWTFS'[new Date(ms).getUTCDay()]}}),
+cell=o=>{let c,e;if(o.x.g){c='p';e='🔥'}else if(o.x.fz){c='f';e='🧊'}else if(o.td){c='t';e=''}else if(o.k<first){c='e';e=''}else{c='m';e='🥶'}return`<div class="${c}${o.td&&c!='t'?' t':''}"><b>${e}</b><span>${o.td?'Today':o.w}</span></div>`},
+st=S.streak||0,fz=S.fz||0,full=fz>=2,prog=full?7:st%7,left=7-prog;
+return`<div class=card><div class=sw><div><div class=n>${st>=30?'💎':st>=7?'🌋':'🔥'} ${st}</div><div class=l>day streak</div></div><div class=r><div class=n>🏆 ${S.best||0}</div><div class=l>best streak</div></div></div>
+<div class=wk>${D7.map(cell).join('')}</div>
+<div class=fzr><span class=ic title="Streak freezes">${'🧊'.repeat(fz)}${'▫️'.repeat(Math.max(0,2-fz))}</span><div class=bar><i style="width:${prog/7*100}%"></i></div><small>${prog}/7</small></div>
+<small>${full?'🧊 Freezes full (2/2). They save your streak if you miss a day.':`${left} more streak day${left>1?'s':''} to earn a 🧊 freeze · you have ${fz}/2`}</small>
+<div class=row style="margin-top:8px;align-items:center"><small>${d.g?'✅ Streak extended today':'Earn '+Math.max(0,S.goal-d.xp)+' more XP today to extend your streak.'}</small><div class=c><b>${Math.min(d.xp,S.goal)}/${S.goal} XP</b></div></div></div>`}
+function home(){hue();touch();wk();let d=day(),c=S.lv-1,k=rk(c),ln=1+Math.floor(Math.sqrt(S.xp/100));MSG+=achv();let tz=!MSG&&S.streak>0&&!d.g?say('r',.6):'',m=MSG||tz;MSG='';sv();
+let hz=[...Array(14)].map((_,i)=>{let x=S.day[new Date(Date.now()-(13-i)*864e5).toISOString().slice(0,10)]||{};return`<i class=hz style="background:${x.g?'hsl(var(--h) 85% 60%)':x.xp?'#9fb4cc':'#c9d5e2'}"></i>`}).join('');
+A.innerHTML=`<div class=talk>${bot(tz?'mad':'')}<div class=bub>${m||CO.ready}</div></div><h1 class=c>${CO.name}</h1>
+<div class=card><div class=row><div><h2 class=ac>${R[k]}</h2><small>Rank ${k+1}/20 · ${c} cleared</small></div><div class=c><h2>Lv ${ln}</h2><small>${S.xp} XP</small></div></div><div class=bar><i style="width:${c%50*2}%"></i></div><small>${c>=1000?'Legend complete!':50-c%50+' levels to '+R[k+1]}</small></div>
+${streakW(d)}
+<button class=p id=pl>▶ ${S.cur?'Resume':c?'Play':'Start'} level ${Math.min(S.lv,1000)}</button>`;
+$('#pl').onclick=()=>play(Math.min(S.lv,1000));
+}
+sv();home();
+</script><script>
+function mindmap(i0,g0){
+const W=920,N=D.length,qa=(s,r=document)=>[...r.querySelectorAll(s)],RM=matchMedia('(prefers-reduced-motion:reduce)').matches,gi=i=>GR.findIndex(g=>i>=g[1]&&i<=g[2]),tot=GR.reduce((s,g)=>s+g[2]-g[1]+1,0);
+const pos={},hub=[];let a0=-Math.PI/2;
+GR.forEach(([n,a,b],g)=>{let k=b-a+1,sp=k/tot*6.2832,md=a0+sp/2;hub.push({n,x:Math.cos(md)*135,y:Math.sin(md)*135});
+for(let j=0;j<k;j++){let an=a0+sp*(j+.5)/k,r=235+(j%3)*72;pos[a+j]={x:Math.cos(an)*r,y:Math.sin(an)*r}}a0+=sp});
+let sel=i0==null?null:i0,gf=g0==null?null:g0,q='',k=1,tx=0,ty=0;
+A.innerHTML=`<h2>🧠 Mind map</h2><small>${S.seen} of ${N} concepts unlocked. Play levels to grow the map.</small><input id=mms placeholder="Search a concept" style="width:100%;font:inherit;padding:10px 16px;margin:10px 0 8px"><div class=chips id=mmc></div><div id=mmv><svg id=mmsvg viewBox="-460 -460 920 920"><g id=vp></g></svg><div class=zc><button id=zi aria-label="Zoom in">+</button><button id=zo aria-label="Zoom out">−</button><button id=zf aria-label="Show everything">⤢</button></div><div id=mmp></div></div><small class=lgd>Practice:<i style="background:#1fa463"></i>strong<i style="background:#f0b429"></i>okay<i style="background:#e0405a"></i>needs work<i style="background:#b8c4d2"></i>new</small>`;
+const svg=document.getElementById('mmsvg'),vp=document.getElementById('vp'),P=document.getElementById('mmp');
+const ap=()=>vp.setAttribute('transform',`translate(${tx} ${ty}) scale(${k})`);
+function go(x,y,kk,anim=true){let k2=Math.max(.6,Math.min(4,kk)),X=-x*k2,Y=-y*k2;if(!anim||RM){tx=X;ty=Y;k=k2;return ap()}let t0=performance.now(),a=[tx,ty,k];(function f(t){let u=Math.min(1,(t-t0)/320),e=1-Math.pow(1-u,3);tx=a[0]+(X-a[0])*e;ty=a[1]+(Y-a[1])*e;k=a[2]+(k2-a[2])*e;ap();if(u<1)requestAnimationFrame(f)})(t0)}
+function view(g,anim){if(g==null)return go(0,0,1,anim);let a=GR[g],xs=[hub[g].x],ys=[hub[g].y];for(let i=a[1];i<=a[2];i++){xs.push(pos[i].x);ys.push(pos[i].y)}
+let x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);go((x0+x1)/2,(y0+y1)/2,W/(Math.max(x1-x0,y1-y0)+140)*.9,anim)}
+const mc=i=>{let m=S.mc[D[i].t]||{r:0,w:0},n=m.r+m.w;return n?m.r/n>=.8?'#1fa463':m.r/n>=.5?'#f0b429':'#e0405a':'#b8c4d2'};
+function chips(){document.getElementById('mmc').innerHTML=`<button data-c=all class="${gf==null?'on':''}">All</button>`+GR.map(([n,a,b],g)=>`<button data-c=${g} class="${gf==g?'on':''}">${n} ${Math.round(Math.max(0,Math.min(b-a+1,S.seen-a))/(b-a+1)*100)}%</button>`).join('')}
+function draw(){let s='';GR.forEach(([n,a,b],g)=>{let h=hub[g],c=g*50,dim=gf!=null&&gf!=g?.22:1;s+=`<g opacity=${dim}>`;
+for(let i=a;i<=b;i++)s+=`<line x1=${h.x} y1=${h.y} x2=${pos[i].x} y2=${pos[i].y} stroke="hsl(${c} 55% 55%)" stroke-width=2 opacity=.5 />`;
+s+=`<line x1=0 y1=0 x2=${h.x} y2=${h.y} stroke="hsl(${c} 60% 40%)" stroke-width=5 stroke-linecap=round /><g data-g=${g} style="cursor:pointer"><rect x=${h.x-56} y=${h.y-15} width=112 height=30 rx=15 fill="hsl(${c} 65% 38%)" stroke=#10203a stroke-width=2 /><text x=${h.x} y=${h.y+5} text-anchor=middle font-size=12.5 font-weight=800 fill=#fff>${n.length>16?n.slice(0,15)+'…':n}</text></g>`;
+for(let i=a;i<=b;i++){let p=pos[i],ok=i<S.seen,on=sel==i,hit=q&&ok&&D[i].t.toLowerCase().includes(q);
+s+=`<g data-i=${i} opacity=${q&&!hit?.25:1} style="cursor:pointer"><circle cx=${p.x} cy=${p.y} r=${on?27:21} fill="${ok?`hsl(${c} 75% 93%)`:'#e3e9f0'}" stroke="${hit?'#e0a800':on?'#10203a':`hsl(${c} 60% 40%)`}" stroke-width=${on||hit?5:2.5} /><text x=${p.x} y=${p.y+7} text-anchor=middle font-size=${on?24:20} fill=#10203a>${ok?D[i].e:'🔒'}</text>`;
+if(ok)s+=`<text x=${p.x} y=${p.y+40} text-anchor=middle font-size=12 font-weight=700 fill=#10203a>${D[i].t.length>15?D[i].t.slice(0,14)+'…':D[i].t}</text><circle cx=${p.x+17} cy=${p.y-17} r=6 fill=${mc(i)} stroke=#fff stroke-width=2 />`;s+='</g>'}s+='</g>'});
+vp.innerHTML=s+`<circle r=46 fill=#10203a /><text y=-2 text-anchor=middle font-size=13 font-weight=800 fill=#fff>${CO.hub}</text><text y=14 text-anchor=middle font-size=11 fill=#fff>${S.seen}/${N}</text>`}
+function panel(){if(sel==null){P.style.display='none';return}P.style.display='block';let c=D[sel],g=gi(sel);
+if(sel>=S.seen){P.innerHTML=`<button class=xx aria-label=Close>✕</button>🔒 <b>Locked concept</b><br><small>Unlocks at level ${sel<3?1:(sel-2)*5+1}. Keep playing to meet it.</small>`}
+else{let m=S.mc[c.t]||{r:0,w:0},rel=[];for(let i=GR[g][1];i<=GR[g][2];i++)if(i!=sel&&i<S.seen)rel.push(i);
+P.innerHTML=`<button class=xx aria-label=Close>✕</button><small>${GR[g][0]}</small><h2>${c.e} ${c.t}</h2><p>${c.d}</p><small>💡 ${c.a}<br>Practice: ${m.r} right, ${m.w} wrong</small><button class=p id=ol>Open full lesson</button>${rel.length?`<div class=chips>${rel.slice(0,8).map(i=>`<button data-r=${i}>${D[i].e} ${D[i].t}</button>`).join('')}</div>`:''}`;
+document.getElementById('ol').onclick=()=>les(sel,()=>mindmap(sel,gf),'Mind map');
+qa('[data-r]',P).forEach(b=>b.onclick=()=>pick(+b.dataset.r,true))}
+P.querySelector('.xx').onclick=()=>{sel=null;draw();panel()}}
+function pick(i,ctr){sel=i;if(ctr&&i<S.seen)go(pos[i].x,pos[i].y,Math.max(k,2.2));draw();panel()}
+function foc(g){gf=g;view(g,true);draw();chips()}
+document.getElementById('mmc').onclick=e=>{let b=e.target.closest('button');if(b)foc(b.dataset.c=='all'?null:+b.dataset.c)};
+document.getElementById('mms').oninput=e=>{q=e.target.value.trim().toLowerCase();draw();if(q){let i=D.findIndex((c,j)=>j<S.seen&&c.t.toLowerCase().includes(q));if(i>=0)go(pos[i].x,pos[i].y,2.4)}};
+const toS=(cx,cy)=>{let r=svg.getBoundingClientRect(),s=W/Math.min(r.width,r.height);return[(cx-r.left-r.width/2)*s,(cy-r.top-r.height/2)*s,s]};
+function zm(k2,px,py){k2=Math.max(.6,Math.min(4,k2));tx=px-(px-tx)*k2/k;ty=py-(py-ty)*k2/k;k=k2;ap()}
+document.getElementById('zi').onclick=()=>zm(k*1.4,0,0);document.getElementById('zo').onclick=()=>zm(k/1.4,0,0);document.getElementById('zf').onclick=()=>{gf=null;view(null,true);draw();chips()};
+const ptr=new Map();let pd=0,moved=0,down=null;
+const dist=()=>{let v=[...ptr.values()];return Math.hypot(v[0][0]-v[1][0],v[0][1]-v[1][1])};
+svg.onpointerdown=e=>{ptr.set(e.pointerId,[e.clientX,e.clientY]);if(ptr.size==1){moved=0;down=e.target.closest('[data-i],[data-g]')}else{pd=dist();down=null}};
+svg.onpointermove=e=>{let o=ptr.get(e.pointerId);if(!o)return;let dx=e.clientX-o[0],dy=e.clientY-o[1];ptr.set(e.pointerId,[e.clientX,e.clientY]);moved+=Math.abs(dx)+Math.abs(dy);
+if(ptr.size==1){if(moved>6){try{svg.setPointerCapture(e.pointerId)}catch(x){}let s=toS(0,0)[2];tx+=dx*s;ty+=dy*s;ap()}}
+else if(ptr.size==2){let d=dist(),v=[...ptr.values()],m=toS((v[0][0]+v[1][0])/2,(v[0][1]+v[1][1])/2);if(pd)zm(k*d/pd,m[0],m[1]);pd=d}};
+svg.onpointerup=svg.onpointercancel=e=>{if(ptr.size==1&&moved<=6&&down&&e.type=='pointerup'){let d=down;if(d.dataset.g!=null)foc(gf==+d.dataset.g?null:+d.dataset.g);else pick(+d.dataset.i,false)}ptr.delete(e.pointerId);pd=0;down=null};
+svg.onwheel=e=>{e.preventDefault();let m=toS(e.clientX,e.clientY);zm(k*(e.deltaY<0?1.15:.87),m[0],m[1])};
+chips();draw();panel();
+if(sel!=null&&sel<S.seen)go(pos[sel].x,pos[sel].y,2.2,false);else if(gf!=null)view(gf,false);else view(gi(Math.max(0,S.seen-1)),false);
+}
+document.addEventListener('click',e=>{if(e.target.closest('#mm')&&document.getElementById('pl')){e.stopImmediatePropagation();e.preventDefault();mindmap()}},true);
+</script>
+<script>
+(()=>{
+const $$=(s,r=document)=>[...r.querySelectorAll(s)],RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+let U={snd:1,vib:1,fs:1};try{U={...U,...JSON.parse(localStorage.sysqui)}}catch(e){}
+const svu=()=>{try{localStorage.sysqui=JSON.stringify(U)}catch(e){}};
+let ac;const tone=(f,d=.12,t=0,ty='sine',v=.08)=>{if(!U.snd)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();let o=ac.createOscillator(),g=ac.createGain(),n=ac.currentTime+t;o.type=ty;o.frequency.value=f;g.gain.setValueAtTime(v,n);g.gain.exponentialRampToValueAtTime(.001,n+d);o.connect(g);g.connect(ac.destination);o.start(n);o.stop(n+d+.02)}catch(e){}};
+const buzz=p=>{if(U.vib&&navigator.vibrate)navigator.vibrate(p)};
+const sfx={ok(){tone(660,.1);tone(880,.14,.09);buzz(15)},no(){tone(180,.22,0,'sawtooth',.06);buzz([40,40,40])},win(){[523,659,784,1047].forEach((f,i)=>tone(f,.2,i*.1,'triangle'));buzz([30,40,30,40,80])}};
+const mk=(id,h)=>{let d=document.createElement('div');d.id=id;d.innerHTML=h||'';document.body.append(d);return d};
+const H=mk('hud'),N=mk('nav'),TS=mk('toast'),SH=mk('sheet');
+N.innerHTML=[['home','🏠','Home'],['map','🗺️','Levels'],['mm','🧠','Mind map'],['fc','🃏','Cards'],['more','⋯','More']].map(([k,e,l])=>`<button data-t=${k}><span>${e}</span>${l}</button>`).join('');
+let tt;function toast(m){TS.textContent=m;TS.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>TS.classList.remove('on'),1900)}
+const FS=[15,16.5,19],FL=['Small','Medium','Large'];
+function sheet(on){SH.classList.toggle('on',!!on);if(!on)return;
+const sp=localStorage.sysq_spicy!=='0',tc=themeChoice(),lk=window.LGX&&LGX.goal,TB=[['auto','🎲','Auto (daily)'],...THEMES.map(t=>[t[0],t[1],t[2]])];
+SH.innerHTML=`<div class=bd></div><div class=pn role=dialog aria-label=Menu><b>Menu</b><div class=g3><button data-f=pf><span>🧑‍🎓</span>Profile</button><button data-f=cs><span>📚</span>Courses</button><button data-f=ac><span>👥</span>Friends</button><button data-f=lg><span>🏆</span>League</button><button data-f=bd><span>🏅</span>Badges</button><button data-f=cx><span>📖</span>Codex</button><button data-f=wk><span>🎯</span>Weak spots</button><button data-f=hp><span>❓</span>Help</button></div>
+<b>Theme</b><div class=g3>${TB.map(([id,e,n])=>`<button data-th=${id} class="${tc==id?'sel':''}"><span>${e}</span>${n}</button>`).join('')}</div>
+<b>Settings</b><button data-s=snd>🔊 Sound: ${U.snd?'On':'Off'}</button><button data-s=vib>📳 Haptics: ${U.vib?'On':'Off'}</button><button data-s=fs>🔤 Text size: ${FL[U.fs]}</button><button data-s=goal>🎯 Daily goal: ${S.goal} XP${lk?' (set by league leader)':''}</button><button data-s=rb>🤖 Robot language: ${sp?'Spicy 🌶️':'Clean'}</button>
+<b>Account</b><button data-s=out>🚪 Log out</button><button data-s=rst>♻️ Reset ${CO.name} progress</button><button data-s=del><small>Delete my account</small></button><button data-s=x><small>Close (Esc)</small></button></div>`}
+SH.onclick=e=>{let b=e.target.closest('button');if(!b){if(e.target.className=='bd')sheet(0);return}
+if(b.dataset.f){sheet(0);({pf:()=>sqProfile(),cs:()=>sqCourses(),ac:()=>sqAcct(),lg:()=>lgp(),bd:()=>bdg(),cx:()=>codex(),wk:()=>weak(),hp:()=>sqHelp()})[b.dataset.f]()}
+else if(b.dataset.th){try{localStorage.sysq_theme=b.dataset.th}catch(x){}applyTheme();sheet(1);sfx.ok()}
+else if(b.dataset.s){let s=b.dataset.s;if(s=='x')return sheet(0);
+if(s=='goal'){if(window.LGX&&LGX.goal)return toast('🏆 Your league leader sets the daily goal');S.goal=S.goal==60?100:S.goal==100?150:60;sv();sheet(1);chrome();return sfx.ok()}
+if(s=='rb'){try{localStorage.sysq_spicy=localStorage.sysq_spicy==='0'?'1':'0'}catch(x){}sheet(1);return sfx.ok()}
+if(s=='out'){sheet(0);return sqLogout()}if(s=='rst'){sheet(0);return sqReset()}if(s=='del'){sheet(0);return sqDelete()}
+U[s]=s=='fs'?(U.fs+1)%3:U[s]?0:1;svu();apply();sheet(1);if(s!='snd')sfx.ok();else tone(660)}};
+N.onclick=e=>{let b=e.target.closest('button');if(!b)return;let k=b.dataset.t;sheet(0);
+if(k=='home')home();else if(k=='map')map(rk(S.lv-1));else if(k=='mm')mindmap();else if(k=='fc')fcs();else sheet(1)};
+H.onclick=e=>{if(e.target.closest('.hl'))return sqProfile();if(e.target.closest('#gr')){let d=day();toast(`⚡ ${d.xp} of ${S.goal} XP today`+(d.xp>=S.goal?' ✓':''))}};
+const apply=()=>{document.body.style.fontSize=FS[U.fs]+'px'};
+function chrome(){let q=!!$('#q');document.body.classList.toggle('focus',q);
+let d=day(),p=Math.min(100,d.xp/S.goal*100|0),ln=1+Math.floor(Math.sqrt(S.xp/100));
+H.innerHTML=`<span class=hl>Lv ${ln}</span><span>🔥 ${S.streak||0}</span><span>⚡ ${S.xp}</span><span class=sp></span><button id=gr style="--p:${p}" aria-label="Daily goal ${p}%"><i>${p>=100?'✓':p+'%'}</i></button>`;
+let k=$('#pl')?'home':$('#mmv')?'mm':A.querySelector('[data-n]')?'map':$('#cd')||/Flashcards/.test(A.textContent.slice(0,30))?'fc':'more';
+$$('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.t==k))}
+let combo=0;
+new MutationObserver(()=>{A.classList.remove('in');void A.offsetWidth;if(!RM)A.classList.add('in');combo=0;scrollTo(0,0);chrome();
+let x=A.textContent;if(/cleared!/.test(x)&&!$('#q')){sfx.win();burst()}if(/RANK UP/.test(x))setTimeout(()=>toast('🎉 New rank!'),500)}).observe(A,{childList:true});
+new MutationObserver(ms=>{let q=$('#q');if(!q)return;for(const m of ms)for(const n of m.addedNodes)if(n.nodeType==1){let b=n.matches('button.p')?n:n.querySelector('button.p');if(b&&q.contains(b)){b.scrollIntoView({block:'nearest',behavior:RM?'auto':'smooth'});b.focus({preventScroll:true})}}}).observe(A,{childList:true,subtree:true});
+document.addEventListener('click',e=>{let b=e.target.closest('button'),q=$('#q');if(!b||!q||!q.contains(b))return;
+setTimeout(()=>{let c=b.className;if(/\bno\b/.test(c)){combo=0;sfx.no()}else if(/\bok\b/.test(c)){combo++;sfx.ok();if(combo>=3&&combo%2)toast('🔥 '+combo+' in a row')}},0)});
+addEventListener('keydown',e=>{if(e.metaKey||e.ctrlKey||e.altKey)return;if(e.key=='Escape')return sheet(0);
+let f=document.activeElement,inp=f&&f.tagName=='INPUT';
+if(e.key=='Enter'){if(inp){let s=$('#sb');if(s)s.click();return}if(f&&f.tagName=='BUTTON')return;let p=$$('button.p',A).pop();if(p){e.preventDefault();p.click()}return}
+if(inp)return;let n=+e.key;if(n>=1&&n<=9){let q=$('#q');if(!q)return;let L=$$('#o:not(.x) button:not(.x)',q),R=L.length?L:$$('.row button:not(.x)',q);if(R[n-1])R[n-1].click()}});
+function burst(){if(RM)return;let c=document.createElement('canvas');c.id='cf';c.width=innerWidth;c.height=innerHeight;document.body.append(c);let g=c.getContext('2d'),cl=['#ffc83d','#2fb7d6','#ff5d73','#3ddc97','#7b61ff'],
+P=[...Array(90)].map(()=>({x:c.width/2,y:c.height*.4,vx:(Math.random()-.5)*14,vy:-Math.random()*14-4,r:Math.random()*5+3,c:cl[Math.random()*5|0],a:Math.random()*6})),t=0;
+(function f(){g.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.a+=.2;g.fillStyle=p.c;g.save();g.translate(p.x,p.y);g.rotate(p.a);g.fillRect(-p.r,-p.r/2,p.r*2,p.r);g.restore()});++t<110?requestAnimationFrame(f):c.remove()})()}
+apply();chrome();
+})();
+</script><script>
+(()=>{
+const SB='https://ddpnikgbhyjamndhwjpc.supabase.co',KEY='sb_publishable_TrjhZf8Cmj-ihtDH4c3qLA__hvpEXcE';
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let L=null;try{L=JSON.parse(localStorage[LKEY])}catch(e){}
+function lgx(d){window.LGX=d&&d.goal?{goal:d.goal,bonus:d.bonus||0}:null;if(window.LGX&&S.goal!=LGX.goal){S.goal=LGX.goal;sv()}}
+try{let c=JSON.parse(localStorage[BKEY]);if(L&&c)lgx(c)}catch(e){}
+const saveL=()=>{if(!L)window.LGX=null;try{L?localStorage[LKEY]=JSON.stringify(L):localStorage.removeItem(LKEY)}catch(e){}};
+async function rpc(fn,a){let r;try{r=await fetch(`${SB}/rest/v1/rpc/${fn}`,{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY},body:JSON.stringify(a)})}catch(e){throw new Error('No internet connection. Try again when you are online.')}
+let j=null;try{j=await r.json()}catch(e){}if(!r.ok)throw new Error(j&&j.message||'Something went wrong. Try again.');return j}
+window.sqToast=m=>{let T=document.getElementById('toast');if(!T)return;T.textContent=m;T.classList.add('on');setTimeout(()=>T.classList.remove('on'),2600)};
+const tst=m=>{let T=document.getElementById('toast');if(!T)return;T.textContent=m;T.classList.add('on');setTimeout(()=>T.classList.remove('on'),2600)};
+let lastKey='',busy=0,prevRank=null,tmr;
+const rankOf=d=>d.members.findIndex(x=>x.me);
+async function sync(force){if(!L||busy)return;try{wk()}catch(e){}let wx=Math.max(0,S.xp-(S.wx||0)),key=wx+'|'+S.xp;if(!force&&key==lastKey)return;busy=1;
+try{await rpc('sq_sync_xp',{p_id:L.id,p_secret:L.secret,p_week_xp:wx,p_total:S.xp});lastKey=key;
+let d=await rpc('sq_board',{p_id:L.id,p_secret:L.secret});try{localStorage[BKEY]=JSON.stringify(d)}catch(e){}lgx(d);
+let r=rankOf(d);if(prevRank!=null&&!document.getElementById('lgb')){if(r<prevRank)tst('🏆 You passed '+d.members[r+1].nick+'!');else if(r>prevRank)tst('😈 '+d.members[r-1].nick+' just passed you')}prevRank=r}catch(e){if(/Not a member/.test(e.message)){L=null;saveL()}}
+busy=0}
+let st;new MutationObserver(()=>{clearTimeout(st);st=setTimeout(()=>sync(),700)}).observe(A,{childList:true});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});setTimeout(()=>sync(),1500);
+const oldLgp=lgp;
+function inp(id,ph,ml,v){return`<input id=${id} placeholder="${ph}" maxlength=${ml} value="${esc(v||'')}" autocomplete=off style="width:100%;font:inherit;padding:10px 16px;margin:6px 0">`}
+function setup(){let nk=((()=>{try{return JSON.parse(localStorage.sysq_auth).username}catch(e){return''}})()||localStorage.sysq_nick||'').slice(0,16);
+A.innerHTML=`<h2 class=ac>🏆 Friends league</h2><small>Race your friends for the most XP each week. Everyone plays on their own phone.</small>
+<div class=card><b>Create a league</b>${inp('cn','League name (e.g. SWEN crew)',30)}${inp('cm','Your nickname',16,nk)}<button class=p id=cb>Create league</button></div>
+<div class=card><b>Join with a code</b>${inp('jc','Code from your friend',6)}${inp('jn','Your nickname',16,nk)}<button class=p id=jb>Join league</button></div>
+<div id=lge class=c style="color:#a3162f;font-weight:700;min-height:24px"></div><button id=pr><small>🎭 Practice league (simulated rivals)</small></button>`;
+const jc=document.getElementById('jc');jc.style.textTransform='uppercase';
+const run=async(b,fn,a)=>{b.disabled=true;document.getElementById('lge').textContent='';try{let r=await rpc(fn,a);L={code:r.code,name:r.name,id:r.id,secret:r.secret,nick:a.p_nick.trim()};saveL();try{localStorage.sysq_nick=L.nick}catch(e){}prevRank=null;await sync(true);board()}catch(e){document.getElementById('lge').textContent=e.message;b.disabled=false}};
+document.getElementById('cb').onclick=e=>run(e.target,'sq_create_league',{p_name:cn.value,p_nick:cm.value,p_course:CID});
+document.getElementById('jb').onclick=e=>run(e.target,'sq_join_league',{p_code:jc.value,p_nick:jn.value,p_course:CID});
+[['cn','cb'],['cm','cb'],['jc','jb'],['jn','jb']].forEach(([i,b])=>document.getElementById(i).onkeydown=e=>{if(e.key=='Enter')document.getElementById(b).click()});
+document.getElementById('pr').onclick=()=>oldLgp()}
+function show(d,off){let ms=d.members,me=rankOf(d),mx=Math.max(1,...ms.map(x=>x.xp)),left=(d.week+1)*6048e5-Date.now(),dy=Math.floor(left/864e5),hr=Math.floor(left%864e5/36e5);
+let msg=ms.length<2?'You are alone here. Share the code to start the race.':me>0?`💪 ${ms[me-1].xp-ms[me].xp+1} XP to pass ${esc(ms[me-1].nick)}`:`👑 You lead by ${ms[0].xp-ms[1].xp} XP`;
+document.getElementById('lgs').textContent=`Resets in ${dy}d ${hr}h${off?' · offline, showing last update':''}`;
+document.getElementById('lgb').innerHTML=`<div class=bub style="margin:8px 0">${msg}</div>`+rules(d,me)+ms.map((x,i)=>`<div class=card style="padding:10px 14px;${x.me?'background:#fff4c2;':''}"><div style="display:flex;justify-content:space-between;gap:8px"><b>${['🥇','🥈','🥉'][i]||(i+1)+'.'} ${esc(x.nick)}${x.me?' (you)':''}</b><b>${x.xp} XP</b></div><div class=bar style="margin:6px 0 2px"><i style="width:${x.xp/mx*100}%"></i></div><small>${x.total} XP all time</small></div>`).join('');bindRules(d)}
+async function load(){if(!document.getElementById('lgb'))return;try{let d=await rpc('sq_board',{p_id:L.id,p_secret:L.secret});try{localStorage[BKEY]=JSON.stringify(d)}catch(e){}lgx(d);prevRank=rankOf(d);show(d)}catch(e){if(/Not a member/.test(e.message)){L=null;saveL();return setup()}let c;try{c=JSON.parse(localStorage[BKEY])}catch(x){}if(c)show(c,1);else document.getElementById('lgs').textContent=e.message}}
+function board(){A.innerHTML=`<div class=row><div><h2 class=ac style="margin:0">🏆 ${esc(L.name)}</h2><small id=lgs>Loading…</small></div><button id=lgr aria-label=Refresh style="flex:0;width:auto;text-align:center">↻</button></div>
+<div class=card style="display:flex;align-items:center;gap:10px"><div style="flex:1"><small>Invite friends with this code</small><h2 style="margin:0;letter-spacing:.18em">${esc(L.code)}</h2></div><button class=p id=lgh style="width:auto">Share</button></div><div id=lgb></div><button id=lgl><small>Leave league</small></button>`;
+document.getElementById('lgr').onclick=async()=>{await sync(true);load()};
+document.getElementById('lgh').onclick=async()=>{let m=`Join my ${CO.name} league "${L.name}"! In the game open More > League > Join with a code: ${L.code}`;try{if(navigator.share)await navigator.share({text:m});else{await navigator.clipboard.writeText(m);tst('Invite copied')}}catch(e){}};
+document.getElementById('lgl').onclick=async()=>{if(!confirm('Leave this league? Your nickname will be removed.'))return;try{await rpc('sq_leave_league',{p_id:L.id,p_secret:L.secret})}catch(e){}L=null;saveL();setup()};
+load();clearInterval(tmr);tmr=setInterval(load,30000)}
+let sg=0,sb=0;
+function rules(d,me){let ch=d.champion&&d.members[me]&&d.members[me].nick==d.champion;sg=d.goal;sb=d.bonus;
+return`<div class=card style="padding:10px 14px"><b>🎯 Daily goal: ${d.goal} XP${d.bonus?` · +${d.bonus} XP bonus`:''}</b><br><small>${d.champion?(ch?'👑 You lead this week, so you set the goal for everyone.':'👑 '+esc(d.champion)+' leads this week and sets the goal for everyone.'):'The weekly leader sets the goal for everyone.'}</small>`+(ch?`<div class=chips id=rg style="margin-top:8px">${[30,60,100,150,200].map(g=>`<button data-g=${g} class="${g==d.goal?'on':''}">${g} XP</button>`).join('')}</div><div class=chips id=rb>${[0,10,25,50].map(b=>`<button data-b=${b} class="${b==d.bonus?'on':''}">${b?'+'+b+' bonus':'No bonus'}</button>`).join('')}</div><button class=p id=rsv>Set for the league</button><div id=rme class=c style="color:#a3162f;font-weight:700"></div>`:'')+`</div>`}
+function bindRules(d){let g=document.getElementById('rg'),b=document.getElementById('rb'),s=document.getElementById('rsv');if(!s)return;
+const pick=(el,k,set)=>el.onclick=e=>{let x=e.target.closest('button');if(!x)return;set(+x.dataset[k]);[...el.children].forEach(c=>c.classList.toggle('on',c===x))};
+pick(g,'g',v=>sg=v);pick(b,'b',v=>sb=v);
+s.onclick=async()=>{s.disabled=true;try{await rpc('sq_set_goal',{p_id:L.id,p_secret:L.secret,p_goal:sg,p_bonus:sb});tst('🎯 Goal updated for everyone');await load()}catch(e){document.getElementById('rme').textContent=e.message}s.disabled=false}}
+lgp=function(){L?(sync(true),board()):setup()};
+document.addEventListener('click',e=>{if(e.target.closest('#lg')&&document.getElementById('pl')){e.stopImmediatePropagation();e.preventDefault();lgp()}},true);
+})();
+</script><script>
+(()=>{
+const SB='https://ddpnikgbhyjamndhwjpc.supabase.co',KEY='sb_publishable_TrjhZf8Cmj-ihtDH4c3qLA__hvpEXcE';
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $i=id=>document.getElementById(id),tst=m=>window.sqToast(m),kOf=c=>c=='st'?'sysq':'sysq_'+c;
+let AU=null;try{AU=JSON.parse(localStorage.sysq_auth)}catch(e){}
+const saveA=()=>{try{AU?localStorage.sysq_auth=JSON.stringify(AU):localStorage.removeItem('sysq_auth')}catch(e){}};
+async function rpc(fn,a){let r;try{r=await fetch(`${SB}/rest/v1/rpc/${fn}`,{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY},body:JSON.stringify(a)})}catch(e){throw new Error('No internet connection.')}
+let j=null;try{j=await r.json()}catch(e){}if(!r.ok)throw new Error(j&&j.message||'Something went wrong. Try again.');return j}
+const adopt=p=>{try{localStorage[SKEY]=JSON.stringify(p)}catch(e){}location.reload()};
+const lvl=s=>1+Math.floor(Math.sqrt(s.xp/100));
+const save=(c,s)=>rpc('sq_save',{p_token:AU.token,p_course:c,p_progress:{...s,k:ck(s)},p_xp:s.xp,p_lv:s.lv||1,p_level:lvl(s),p_streak:s.streak||0,p_last:s.sc||s.last||T(),p_today:(s.day&&s.day[T()]||{}).xp|0});
+let lastP='',pb=0,pt;
+async function push(force){if(!AU||pb)return;let key=S.xp+'|'+(S.streak||0)+'|'+(S.sc||'')+'|'+S.lv;if(!force&&key==lastP)return;pb=1;
+try{let r=await save(CID,S);lastP=key;if(r.stale&&r.progress&&r.xp>S.xp)adopt(r.progress)}
+catch(e){if(/log in again/i.test(e.message)){AU=null;saveA();gate()}}pb=0}
+new MutationObserver(()=>{if(!AU)return;clearTimeout(pt);pt=setTimeout(()=>push(),1500)}).observe(A,{childList:true});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)push()});
+async function enter(){document.body.classList.remove('gate');
+try{for(const c of Object.keys(COURSES)){if(c==CID)continue;let s=null;try{s=JSON.parse(localStorage[kOf(c)])}catch(e){}if(s&&s.xp>0)await save(c,s)}
+let m=await rpc('sq_me',{p_token:AU.token,p_course:CID});if(m.progress&&m.xp>S.xp)return adopt(m.progress);await push(true)}catch(e){if(/log in again/i.test(e.message)){AU=null;saveA();return gate()}}home();intro();poll()}
+const fld=(id,ph,t)=>`<input id=${id} type=${t||'text'} placeholder="${ph}" maxlength=40 autocomplete=${t=='password'?'current-password':'username'} autocapitalize=none spellcheck=false style="width:100%;font:inherit;padding:10px 16px;margin:6px 0">`;
+function gate(){document.body.classList.add('gate');auth()}
+function auth(){A.innerHTML=`<div class=big>📚</div><h1 class=c>Study Quest</h1><p class=c><small>Log in or create an account to save your progress online and play on any device.</small></p>
+<div class=card>${fld('au','Username')}${fld('ap','Password (6+ characters)','password')}<button class=p id=al>Log in</button><button class=p id=as style="background:#fff;color:var(--ink);text-shadow:none">Create account</button></div>
+<div id=ae class=c style="color:#a3162f;font-weight:700;min-height:24px"></div>`;
+const go=async(fn,b)=>{$i('ae').textContent='';b.disabled=true;try{let r=await rpc(fn,{p_username:$i('au').value,p_password:$i('ap').value});AU={token:r.token,username:r.username};saveA();tst('Signed in as @'+r.username);enter()}catch(e){$i('ae').textContent=e.message;b.disabled=false}};
+$i('al').onclick=e=>go('sq_login',e.target);$i('as').onclick=e=>go('sq_signup',e.target);
+['au','ap'].forEach(i=>$i(i).onkeydown=e=>{if(e.key=='Enter')$i('al').click()})}
+const spicy=()=>localStorage.sysq_spicy!=='0',pickOne=a=>a[Math.random()*a.length|0];
+const cinfo=r=>r&&r.lv?`Level ${r.lv} of 1000 · ⚡ ${r.xp} XP · 🔥 ${r.streak}`:'Not started yet';
+const crow=(c,r,extra='',bg='')=>{r=r||{xp:0,lv:0,streak:0};let p=Math.max(r.lv?1:0,Math.min(100,r.lv/10));return`<div class="card cs" style="${bg}"><div class=ic>${c.icon}</div><div class=tx><b>${c.name}</b><br><small>${c.full}</small><div class=bar><i style="width:${p}%"></i></div><small>${cinfo(r)}</small></div>${extra}</div>`};
+const ago=(d,t)=>{if(!d)return'not started';if(d==t)return'active today';let n=Math.round((Date.parse(t)-Date.parse(d))/864e5);return n==1?'active yesterday':n+' days ago'};
+async function courses(){if(!AU)return gate();
+A.innerHTML=`<h2 class=ac>📚 Courses</h2><small id=cst>Loading your progress…</small><div id=cl></div><button id=ch><small>Home</small></button>`;$i('ch').onclick=()=>home();
+let rows={};try{(await rpc('sq_courses',{p_token:AU.token})).forEach(r=>rows[r.course]=r)}catch(e){}
+rows[CID]={xp:S.xp,lv:S.lv,streak:S.streak||0};
+let tot=Object.values(rows).reduce((a,r)=>a+r.xp,0);
+if(!$i('cl'))return;$i('cst').textContent=`⚡ ${tot} XP across all courses · signed in as @${AU.username}`;
+$i('cl').innerHTML=Object.entries(COURSES).map(([id,c])=>{let r=rows[id],cur=id==CID;
+return crow(c,r,`<button class=p data-c=${id} style="width:auto;margin:0" ${cur?'disabled':''}>${cur?'Playing':r&&r.lv?'Continue':'Start'}</button>`,cur?'background:#fff4c2':'')}).join('')+
+`<b>Coming soon</b>`+SOON.map(([id,e,n])=>`<div class="card cs soon"><div class=ic>${e}</div><div class=tx><b>${n}</b><br><small>🔒 Coming soon</small></div></div>`).join('');
+$i('cl').onclick=async e=>{let b=e.target.closest('button[data-c]');if(!b||b.disabled)return;b.disabled=true;await push(true);try{localStorage.sysq_course=b.dataset.c}catch(x){}location.reload()}}
+async function profile(){if(!AU)return gate();
+let d=day(),k=rk(S.lv-1),ks=[...Array(7)].map((_,i)=>new Date(Date.now()-(6-i)*864e5).toISOString().slice(0,10)),mx=Math.max(50,...ks.map(x=>(S.day[x]||{}).xp||0)),
+bars=ks.map(x=>{let v=(S.day[x]||{}).xp||0;return`<div style="flex:1;text-align:center"><div style="height:${v/mx*90}px;background:hsl(var(--h) 85% 60%);border-radius:6px 6px 0 0;min-height:2px"></div><small>${x.slice(8)}</small></div>`}).join(''),
+acc=d.r+d.w?Math.round(d.r/(d.r+d.w)*100)+'%':'–',
+mods=GR.map(([n,a,b])=>{let p=Math.max(0,Math.min(1,(S.seen-a)/(b-a+1)));return`<small>${n} ${Math.round(p*100)}%</small><div class=bar><i style="width:${p*100}%"></i></div>`}).join('');
+A.innerHTML=`<div class=card><div class=talk>${bot()}<div style="flex:1"><h2 style="margin:0">@${esc(AU.username)}</h2><small>${R[k]} · Lv ${lvl(S)}</small><br><b>⚡ ${S.xp} XP</b> <small>in ${CO.name}</small><br><small id=ptx></small></div></div></div>
+<div class=card><b>Today</b><div class=row style="margin-top:8px"><div class=c><h2>${d.xp}</h2><small>XP</small></div><div class=c><h2>${d.lv}</h2><small>levels</small></div><div class=c><h2>${acc}</h2><small>accuracy</small></div><div class=c><h2>${d.c}</h2><small>new concepts</small></div><div class=c><h2>${d.f}</h2><small>cards</small></div></div><small>🔥 ${S.streak}-day streak · best ${S.best||0} · 🧊 ×${S.fz||0}</small></div>
+<div class=card><b>All time</b><div class=row style="margin-top:8px"><div class=c><h2>${S.lv-1}</h2><small>levels cleared</small></div><div class=c><h2>${S.seen}/${D.length}</h2><small>concepts</small></div><div class=c><h2>${(S.ach||[]).length}/${AC.length}</h2><small>badges</small></div></div></div>
+<div class=card><b>XP, last 7 days</b><div style="display:flex;gap:6px;align-items:flex-end;margin-top:8px">${bars}</div></div><div class=card><b>Module mastery</b><br>${mods}</div>
+<b>My courses</b><div id=pc><small>Loading…</small></div><div class=row><button id=pf1>👥 Friends</button><button id=pf2>📚 Switch course</button></div><button class=p id=hm>Home</button>`;
+$i('hm').onclick=()=>home();$i('pf1').onclick=friends;$i('pf2').onclick=courses;
+let rows={};try{(await rpc('sq_courses',{p_token:AU.token})).forEach(r=>rows[r.course]=r)}catch(e){}
+rows[CID]={xp:S.xp,lv:S.lv,streak:S.streak||0};if(!$i('pc'))return;
+$i('ptx').textContent='⚡ '+Object.values(rows).reduce((a,r)=>a+r.xp,0)+' XP across all courses';
+$i('pc').innerHTML=Object.entries(COURSES).map(([id,c])=>crow(c,rows[id],'',id==CID?'background:#fff4c2':'')).join('')}
+async function fprofile(u){if(!AU)return gate();
+A.innerHTML=`<div class=row><button id=fpb style="flex:0;width:auto">←</button><h2 class=ac style="margin:0">@${esc(u)}</h2></div><div id=fpc><small>Loading…</small></div>`;$i('fpb').onclick=friends;
+try{let p=await rpc('sq_profile',{p_token:AU.token,p_username:u}),rows={},t=T(),tot=0,best=0,last='';p.courses.forEach(r=>{rows[r.course]=r;tot+=r.xp;best=Math.max(best,r.best);if(r.last_active>last)last=r.last_active});
+if(!$i('fpc'))return;
+$i('fpc').innerHTML=`<div class=card><div class=row><div class=c><h2>⚡ ${tot}</h2><small>total XP</small></div><div class=c><h2>🏅 ${best}</h2><small>best streak</small></div></div><small>${ago(last,t)} · joined ${new Date(p.joined).toLocaleDateString(undefined,{month:'short',year:'numeric'})}</small></div>`+
+Object.entries(COURSES).map(([id,c])=>crow(c,rows[id])).join('')+
+(p.me?'':`<div class=row><button class=p id=fpn>👋 Nudge to study</button><button id=fpr><small>Remove friend</small></button></div>`);
+if(!p.me){$i('fpn').onclick=()=>nudge(u,$i('fpn'));$i('fpr').onclick=async()=>{if(!confirm('Remove @'+u+' from your friends?'))return;try{await rpc('sq_unfollow',{p_token:AU.token,p_username:u})}catch(x){}friends()}}}
+catch(e){if($i('fpc'))$i('fpc').innerHTML=`<div class=card style="color:#a3162f;font-weight:700">${esc(e.message)}</div>`}}
+async function nudge(u,btn){if(btn)btn.disabled=true;try{await rpc('sq_nudge',{p_token:AU.token,p_username:u});tst('👋 Nudged @'+u+'!')}catch(e){tst(e.message)}if(btn)btn.disabled=false}
+let ft;
+function paint(rows){let t=T(),y=new Date(Date.now()-864e5).toISOString().slice(0,10),mx=Math.max(1,...rows.map(x=>x.xp));
+$i('fb').innerHTML=rows.map((x,i)=>{let alive=x.last_active&&x.last_active>=y&&x.streak>0;
+return`<div class=card style="padding:10px 14px;${x.me?'background:#fff4c2;':''}"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><button data-p="${esc(x.username)}" style="width:auto;margin:0;padding:0;border:0;box-shadow:none;background:none;font-weight:800;text-align:left">${['🥇','🥈','🥉'][i]||(i+1)+'.'} @${esc(x.username)}${x.me?' (you)':''}</button><b style="${alive?'':'opacity:.4'}">🔥 ${alive?x.streak:0}</b></div>
+<div class=bar style="margin:6px 0 2px"><i style="width:${x.xp/mx*100}%"></i></div>
+<div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><small>⚡ ${x.xp} XP · Lv ${x.level}${x.last_active==t?' · +'+x.today_xp+' today':''} · ${ago(x.last_active,t)}</small>${x.me?'':`<span style="display:flex;gap:6px"><button data-n="${esc(x.username)}" aria-label=Nudge style="width:auto;margin:0;padding:2px 10px;box-shadow:none;border-width:1px;${x.last_active==t?'opacity:.5':''}">👋</button><button data-u="${esc(x.username)}" aria-label=Remove style="width:auto;margin:0;padding:2px 8px;box-shadow:none;border-width:1px">✕</button></span>`}</div></div>`}).join('')+(rows.length<2?'<div class=bub style="margin:8px 0">Add a friend by username to compare streaks and XP.</div>':'')}
+async function load(){if(!$i('fb'))return;try{paint(await rpc('sq_friends',{p_token:AU.token,p_course:CID}));$i('fs').textContent=CO.name+' · tap a name for their profile'}catch(e){if(/log in again/i.test(e.message)){AU=null;saveA();clearInterval(ft);return gate()}$i('fs').textContent=e.message}}
+function friends(){if(!AU)return gate();
+A.innerHTML=`<div class=row><div><h2 class=ac style="margin:0">👥 Friends</h2><small id=fs>Loading…</small></div><button id=fr aria-label=Refresh style="flex:0;width:auto;text-align:center">↻</button></div>
+<div class=card style="display:flex;gap:8px;align-items:center"><div style="flex:1">${fld('fu','Friend\'s username')}</div><button class=p id=fa style="width:auto">Add</button></div>
+<div id=fe class=c style="color:#a3162f;font-weight:700;min-height:20px"></div><div id=fb></div>
+<small>Signed in as @${esc(AU.username)} · 👋 nudges a friend to study</small><button id=fh><small>Home</small></button>`;
+const add=async()=>{$i('fe').textContent='';try{await rpc('sq_follow',{p_token:AU.token,p_username:$i('fu').value});$i('fu').value='';load()}catch(e){$i('fe').textContent=e.message}};
+$i('fa').onclick=add;$i('fu').onkeydown=e=>{if(e.key=='Enter')add()};
+$i('fr').onclick=async()=>{await push(true);load()};
+$i('fb').onclick=async e=>{let b=e.target.closest('button');if(!b)return;
+if(b.dataset.p){clearInterval(ft);return fprofile(b.dataset.p)}
+if(b.dataset.n)return nudge(b.dataset.n,b);
+if(b.dataset.u){if(!confirm('Remove @'+b.dataset.u+' from your friends?'))return;try{await rpc('sq_unfollow',{p_token:AU.token,p_username:b.dataset.u})}catch(x){}load()}};
+$i('fh').onclick=()=>{clearInterval(ft);home()};
+push(true).then(load);clearInterval(ft);ft=setInterval(load,30000)}
+async function logout(){if(!confirm('Log out? Your progress stays saved online.'))return;await push(true);try{await rpc('sq_logout',{p_token:AU.token})}catch(e){}AU=null;saveA();gate()}
+async function reset(){if(!confirm(`Erase ALL ${CO.name} progress? The saved copy online is deleted too.`))return;
+try{if(AU)await rpc('sq_reset_course',{p_token:AU.token,p_course:CID})}catch(e){return tst(e.message)}
+S={lv:1,xp:0,st:{},seen:0,day:{},fc:{},streak:0,mc:{},rc:[],rt:[],fz:0,best:0,goal:window.LGX&&LGX.goal||60,ach:[]};sv();lastP='';home()}
+async function del(){if(!AU)return;let pw=prompt('Delete your account and ALL saved progress online? This cannot be undone. Type your password to confirm:');if(!pw)return;
+try{await rpc('sq_delete_account',{p_token:AU.token,p_password:pw})}catch(e){return tst(e.message)}
+try{Object.keys(localStorage).filter(k=>k.startsWith('sysq')).forEach(k=>localStorage.removeItem(k))}catch(e){}location.reload()}
+function help(){A.innerHTML=`<h2 class=ac>❓ Help</h2><div class=card><b>⚡ XP & levels</b><br><small>Clear levels to earn XP. Your Lv comes from total XP; your rank comes from levels cleared.</small></div><div class=card><b>🔥 Streak</b><br><small>Hit your daily XP goal to extend your streak. Every 7 days you earn a 🧊 freeze that saves a missed day.</small></div><div class=card><b>🏆 League</b><br><small>Race friends for weekly XP. The weekly leader sets everyone's daily goal and bonus XP.</small></div><div class=card><b>👋 Nudges</b><br><small>In Friends, tap 👋 to nudge a friend who needs to study. You can nudge each friend once every 12 hours.</small></div><div class=card><b>🤖 Your robot</b><br><small>Each day your robot gets a new name, look and theme. Tap it for a pep talk. Menu → Robot language switches spicy to clean.</small></div><button class=p id=hm>Home</button>`;$i('hm').onclick=()=>home()}
+async function poll(){if(!AU)return;try{let r=await rpc('sq_my_nudges',{p_token:AU.token});if(r.length){let names=[...new Set(r.map(x=>'@'+x.from))].join(', '),b=$i('nudge')||document.createElement('div');b.id='nudge';b.innerHTML=`<b>👋 ${esc(names)} nudged you!</b><br><small>${spicy()?'Damn, don\'t leave them hanging. Go study!':'Time to study!'} (tap to dismiss)</small>`;b.onclick=()=>b.remove();document.body.append(b)}}catch(e){if(/log in again/i.test(e.message)){AU=null;saveA();gate()}}}
+setInterval(poll,9e4);document.addEventListener('visibilitychange',()=>{if(!document.hidden)poll()});
+function intro(){if(!AU||document.body.classList.contains('gate'))return;let t=T();try{if(localStorage.sysq_intro===t)return;localStorage.sysq_intro=t}catch(e){}
+let r=robot(),sp=spicy(),nm='@'+AU.username,k=dayHash()%3,th=themeChoice()=='auto'?(THEMES.find(x=>x[0]==themeId())||[])[2]:'',
+msg=sp?[`Yo ${nm}! I'm ${r.name}, your study bot. Fresh day, fresh look: ${r.look}. Now quit lounging and let's farm some XP, damn it!`,`${r.name} reporting for duty in my ${r.look} outfit. ${S.streak?`Your streak is ${S.streak} days, so don't you dare screw it up.`:'You have no streak yet, so get your ass moving and start one.'}`,`Hell yeah, new day! The name's ${r.name}, today's look is ${r.look}. Let's kick some ass in ${CO.full}.`][k]
+:[`Hi ${nm}! I'm ${r.name}, your study buddy today. New look: ${r.look}. Ready to learn?`,`${r.name} here in my ${r.look} outfit. ${S.streak?`Your streak is ${S.streak} days. Let's keep it going!`:"Let's start a streak today!"}`,`New day, new me! I'm ${r.name} (${r.look}). Let's explore ${CO.full}.`][k];
+let o=document.createElement('div');o.id='intro';o.innerHTML=`<div class=pn>${mkBot('happy',130)}<h2 style="margin:6px 0">Hi, I'm ${r.name}!</h2><p>${msg}</p><small>🎯 Today's goal: ${S.goal} XP${th?' · 🎨 Theme of the day: '+th:''}</small><button class=p id=ig>Let's go 💪</button></div>`;document.body.append(o);o.onclick=e=>{if(e.target.id=='intro'||e.target.id=='ig')o.remove()}}
+let qz=null,pokes=0,pokeT=0,idleT=Date.now();
+function botLine(){let d=day(),left=Math.max(0,S.goal-d.xp),nm=AU?AU.username:'friend',sp=spicy(),now=Date.now();
+if(qz){let c=qz;qz=null;return`${c.e} ${c.t}: ${c.d}`}
+pokes=now-pokeT<4000?pokes+1:1;pokeT=now;
+if(pokes>=6){pokes=0;return sp?pickOne(['Poke me one more time and I swear I\'ll unplug myself. Go study, damn it!','Quit poking me! Do a level instead, for crying out loud.']):'Hey, that tickles! Go play a level instead.'}
+let L=[];
+if(!d.g&&S.streak>0)L.push(...(sp?[`Damn, ${nm}, your ${S.streak}-day streak is on the line. ${left} XP to go. Move your ass.`,`Hell no, we are not losing a ${S.streak}-day streak today. Play a level. Now.`]:[`Your ${S.streak}-day streak needs ${left} more XP today. You can do it!`]));
+if(d.xp==0)L.push(...(sp?[`Zero XP today? What the hell, ${nm}? One level. Go.`,`Crap, you have done nothing today. Tap Play already!`]:['No XP yet today. One level gets you started!']));
+if(d.g)L.push(...(sp?['Hell yeah, goal smashed! Do not stop now, go for more XP.','Holy crap, look at you. Got energy for one more level?']:['Goal done! One more level for fun?']));
+else if(d.xp>0)L.push(sp?`${left} XP to go. Quit dragging your feet, damn it.`:`Only ${left} XP to go!`);
+let i=Math.floor(Math.random()*Math.max(3,Math.min(S.seen||3,D.length)));
+L.push(['Q',D[i]]);let c=pickOne(L);
+if(Array.isArray(c)){qz=c[1];return`Quick one: what is "${qz.t}"? Tap me again for the answer.`}return c}
+document.addEventListener('click',e=>{idleT=Date.now();let b=e.target.closest('svg.bot');if(!b||!AU)return;b.classList.remove('happy','mad');void b.getBoundingClientRect();b.classList.add(pokes>=4?'mad':'happy');
+let t=botLine(),bub=b.closest('.talk')&&b.closest('.talk').querySelector('.bub');if($('#pl')&&bub)bub.textContent=t;else tst('🤖 '+t)});
+['keydown','pointerdown'].forEach(ev=>document.addEventListener(ev,()=>idleT=Date.now()));
+setInterval(()=>{if(!AU||!$('#pl')||Date.now()-idleT<6e4)return;idleT=Date.now();let bub=document.querySelector('.talk .bub'),b=document.getElementById('bot');if(bub){qz=null;bub.textContent=botLine()}if(b){b.classList.remove('happy','mad');void b.getBoundingClientRect();b.classList.add('mad')}},15000);
+const TNX={w:['Wrong. Damn it, read the lesson!','Oh, hell no. Try again.','That answer was crap and you know it.','Are you even trying, or just clicking?'],i:['Hell, are you still there? The level will not play itself.','Quit staring and tap something, damn it.','Wake your ass up, we have XP to farm.'],r:['Damn it, your streak is about to die. One level!','Do not you dare lose that streak. Hell no.','Your streak is on thin ice. Move your ass.'],l:['Running away already? Hell no. Get back here.','Quitting? Damn, that is weak.'],s:['One star? Come on, damn it, you can do better.'],h:['Hell yeah!','Damn, that was clean.','Holy crap, nice one!','Kicking ass 🦾']};
+window.botPool=k=>TN[k].concat(spicy()?TNX[k]||[]:[]);
+window.sqAcct=friends;window.sqCourses=courses;window.sqProfile=profile;window.sqHelp=help;window.sqLogout=logout;window.sqReset=reset;window.sqDelete=del;
+if(!AU)gate();else enter();
+})();
+</script>
+<script>if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))</script></body></html>
