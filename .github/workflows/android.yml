@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: 20
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 21
@@ -38,11 +38,39 @@ jobs:
           npx cap init "Study Quest" com.kidus.studyquest --web-dir www
           npx cap add android
           bash scripts/add-widget.sh
+          grep -n "StreakWidgetProvider" android/app/src/main/AndroidManifest.xml
           npx cap sync android
+
+      - name: Fix Kotlin duplicate dependencies
+        run: |
+          cat >> android/app/build.gradle <<'EOF'
+
+          // Align all Kotlin stdlib artifacts to one version so jdk7/jdk8 1.6.21 no longer clash with 1.8.22
+          dependencies {
+              implementation platform('org.jetbrains.kotlin:kotlin-bom:1.8.22')
+          }
+          configurations.all {
+              exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+              exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+          }
+          EOF
+          echo "---- tail of android/app/build.gradle ----"
+          tail -15 android/app/build.gradle
 
       - name: Build debug APK
         working-directory: android
         run: ./gradlew assembleDebug
+
+      - name: Verify the widget is inside the APK
+        run: |
+          python3 - <<'PY'
+          import zipfile
+          z = zipfile.ZipFile("android/app/build/outputs/apk/debug/app-debug.apk")
+          m = z.read("AndroidManifest.xml")
+          ok = b"StreakWidgetProvider" in m or "StreakWidgetProvider".encode("utf-16le") in m
+          print("WIDGET PRESENT IN APK" if ok else "WIDGET MISSING FROM APK")
+          raise SystemExit(0 if ok else 1)
+          PY
 
       - uses: actions/upload-artifact@v4
         with:
