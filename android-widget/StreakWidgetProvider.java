@@ -7,7 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
+import androidx.core.content.ContextCompat;
 import android.widget.RemoteViews;
 
 import org.json.JSONObject;
@@ -62,11 +62,15 @@ public class StreakWidgetProvider extends AppWidgetProvider {
         }
         boolean playedToday = "g".equals(days.optString(today, ""));
 
-        v.setTextViewText(R.id.sw_streak, (streak >= 30 ? GEM : streak >= 7 ? FLAME_BIG : FIRE) + " " + streak);
-        if (playedToday) { v.setTextViewText(R.id.sw_sub, "day streak \u2713"); v.setTextColor(R.id.sw_sub, Color.parseColor("#0B6B3A")); }
-        else if (streak > 0) { v.setTextViewText(R.id.sw_sub, "play today to keep it!"); v.setTextColor(R.id.sw_sub, Color.parseColor("#D9480F")); }
-        else { v.setTextViewText(R.id.sw_sub, "start a streak today"); v.setTextColor(R.id.sw_sub, Color.parseColor("#4A5B73")); }
-        v.setTextViewText(R.id.sw_best, TROPHY + " " + best);
+        int cText2 = ContextCompat.getColor(ctx, R.color.sw_text2);
+        int cAccent = ContextCompat.getColor(ctx, R.color.sw_accent);
+
+        v.setTextViewText(R.id.sw_flame, streak >= 30 ? GEM : streak >= 7 ? FLAME_BIG : FIRE);
+        v.setTextViewText(R.id.sw_streak, String.valueOf(streak));
+        if (playedToday) { v.setTextViewText(R.id.sw_sub, "Done for today \u2713"); v.setTextColor(R.id.sw_sub, ContextCompat.getColor(ctx, R.color.sw_good)); }
+        else if (streak > 0) { v.setTextViewText(R.id.sw_sub, "Play today to keep it"); v.setTextColor(R.id.sw_sub, ContextCompat.getColor(ctx, R.color.sw_warn)); }
+        else { v.setTextViewText(R.id.sw_sub, "Start a streak today"); v.setTextColor(R.id.sw_sub, cText2); }
+        v.setTextViewText(R.id.sw_best, TROPHY + " Best " + best);
 
         int[] E = {R.id.e0, R.id.e1, R.id.e2, R.id.e3, R.id.e4, R.id.e5, R.id.e6};
         int[] L = {R.id.l0, R.id.l1, R.id.l2, R.id.l3, R.id.l4, R.id.l5, R.id.l6};
@@ -75,26 +79,30 @@ public class StreakWidgetProvider extends AppWidgetProvider {
             long ms = now - (long) (6 - i) * DAY;
             String k = f.format(new Date(ms));
             String st = days.optString(k, "");
+            boolean isToday = k.equals(today);
             String e;
-            if (st.equals("g")) e = FIRE;
-            else if (st.equals("f")) e = ICE;
-            else if (k.equals(today)) e = "\u25CB";
-            else if (saved && k.compareTo(sd) > 0 && k.compareTo(today) < 0) e = ICE;
-            else if (k.compareTo(first) < 0) e = "\u00B7";
-            else e = COLD;
+            int bg;
+            if (st.equals("g")) { e = FIRE; bg = R.drawable.sw_c_fire; }
+            else if (st.equals("f")) { e = ICE; bg = R.drawable.sw_c_ice; }
+            else if (isToday) { e = ""; bg = R.drawable.sw_c_today; }
+            else if (saved && k.compareTo(sd) > 0 && k.compareTo(today) < 0) { e = ICE; bg = R.drawable.sw_c_ice; }
+            else if (k.compareTo(first) < 0) { e = ""; bg = R.drawable.sw_c_empty; }
+            else { e = COLD; bg = R.drawable.sw_c_miss; }
             cal.setTimeInMillis(ms);
-            String lab = k.equals(today) ? "Today" : String.valueOf("SMTWTFS".charAt(cal.get(Calendar.DAY_OF_WEEK) - 1));
+            String lab = isToday ? "Today" : String.valueOf("SMTWTFS".charAt(cal.get(Calendar.DAY_OF_WEEK) - 1));
             v.setTextViewText(E[i], e);
+            v.setInt(E[i], "setBackgroundResource", bg);
             v.setTextViewText(L[i], lab);
+            v.setTextColor(L[i], isToday ? cAccent : cText2);
         }
 
         StringBuilder ic = new StringBuilder();
-        for (int i = 0; i < 2; i++) ic.append(i < fz ? ICE : "\u25AB");
+        for (int i = 0; i < 2; i++) { if (i > 0) ic.append(" "); ic.append(i < fz ? ICE : "\u25CB"); }
         v.setTextViewText(R.id.sw_fz, ic.toString());
         boolean full = fz >= 2;
         int prog = full ? 7 : streak % 7;
         v.setProgressBar(R.id.sw_pb, 7, prog, false);
-        v.setTextViewText(R.id.sw_pt, full ? "freezes full" : (7 - prog) + "d to " + ICE);
+        v.setTextViewText(R.id.sw_pt, full ? "Freezes full" : (7 - prog) + (7 - prog == 1 ? " day" : " days") + " to " + ICE);
 
         Intent launch = ctx.getPackageManager().getLaunchIntentForPackage(ctx.getPackageName());
         if (launch != null) {

@@ -7,8 +7,9 @@ mkdir -p "$PKG" "$APP/res/layout" "$APP/res/xml" "$APP/res/drawable" "$APP/res/v
 cp android-widget/StreakWidgetProvider.java android-widget/StreakWidgetPlugin.java android-widget/MainActivity.java "$PKG/"
 cp android-widget/widget_streak.xml "$APP/res/layout/"
 cp android-widget/streak_widget_info.xml "$APP/res/xml/"
-cp android-widget/widget_bg.xml "$APP/res/drawable/"
+cp android-widget/widget_bg.xml android-widget/sw_*.xml "$APP/res/drawable/"
 cp android-widget/widget_strings.xml "$APP/res/values/"
+cp android-widget/widget_colors.xml "$APP/res/values/"
 python3 - <<'PY'
 p = "android/app/src/main/AndroidManifest.xml"
 s = open(p, encoding="utf-8").read()
