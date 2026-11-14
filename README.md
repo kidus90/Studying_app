@@ -14,3 +14,7 @@ Actions tab > *Build Android APK* > **Run workflow**. Download `study-quest-apk`
 ## Notes
 - Keep `index.html` as the app file name. Edit it, push, and the site updates (the service worker is re-stamped with the commit SHA on each deploy).
 - Progress is stored in the browser's localStorage per install; Supabase login/sync works as before.
+
+## Android home / lock screen widget
+Built into the APK (see `android-widget/` and `scripts/add-widget.sh`). Install the APK, long-press your home screen > **Widgets** > **Study Quest streak**. It shows your streak, best streak, the last 7 days (🔥 played, 🥶 missed, 🧊 freeze used) and your freezes with progress to the next one. Tap it to open the app. It updates whenever you finish a level or leave the app, and refreshes itself about every 30 minutes. The widget shows the course you last had open.
+Lock screen: the widget declares lock-screen support, but whether your phone offers lock-screen widgets depends on the Android version and brand.
