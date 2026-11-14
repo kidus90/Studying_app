@@ -37,6 +37,8 @@ jobs:
           npm i @capacitor/core @capacitor/cli @capacitor/android
           npx cap init "Study Quest" com.kidus.studyquest --web-dir www
           npx cap add android
+          # remove leftovers from older widget designs so they can't break the build
+          rm -f android-widget/sw_c_empty.xml android-widget/sw_c_fire.xml android-widget/sw_c_today.xml android-widget/sw_pill.xml android-widget/widget_colors_night.xml
           bash scripts/add-widget.sh
           grep -n "StreakWidgetProvider" android/app/src/main/AndroidManifest.xml
           npx cap sync android
