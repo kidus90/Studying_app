@@ -69,7 +69,18 @@ jobs:
             echo "::error::Missing secrets KEYSTORE_B64, KEYSTORE_PASSWORD or KEYSTORE_ALIAS (repo Settings > Secrets and variables > Actions). Without them every build gets a new random key and phones refuse to update."
             exit 1
           fi
-          echo "$KEYSTORE_B64" | base64 -d > android/app/study-quest.keystore
+          # strip accidental spaces or line breaks from pasted secrets
+          KS_PASS=$(printf %s "$KEYSTORE_PASSWORD" | tr -d '[:space:]')
+          KS_ALIAS=$(printf %s "$KEYSTORE_ALIAS" | tr -d '[:space:]')
+          printf %s "$KEYSTORE_B64" | tr -d '[:space:]' | base64 -d > android/app/study-quest.keystore
+          echo "KS_PASS=$KS_PASS" >> "$GITHUB_ENV"
+          echo "KS_ALIAS=$KS_ALIAS" >> "$GITHUB_ENV"
+          # fail early with a readable message if the secrets do not match the keystore
+          if ! keytool -list -keystore android/app/study-quest.keystore -storepass "$KS_PASS" -alias "$KS_ALIAS" >/dev/null 2>&1; then
+            echo "::error::The keystore could not be opened. KEYSTORE_PASSWORD or KEYSTORE_ALIAS does not match KEYSTORE_B64. Re-copy all three from signing_secrets.txt and keystore_base64.txt."
+            exit 1
+          fi
+          echo "Keystore opened OK"
           cat >> android/app/build.gradle <<'EOF'
 
           // Same signing key on every build, so Android accepts the APK as an update
@@ -77,9 +88,9 @@ jobs:
               signingConfigs {
                   debug {
                       storeFile file('study-quest.keystore')
-                      storePassword System.getenv('KEYSTORE_PASSWORD')
-                      keyAlias System.getenv('KEYSTORE_ALIAS')
-                      keyPassword System.getenv('KEYSTORE_PASSWORD')
+                      storePassword System.getenv('KS_PASS')
+                      keyAlias System.getenv('KS_ALIAS')
+                      keyPassword System.getenv('KS_PASS')
                   }
               }
               defaultConfig {
@@ -92,8 +103,6 @@ jobs:
       - name: Build debug APK
         working-directory: android
         env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
           RUN_NUMBER: ${{ github.run_number }}
         run: ./gradlew assembleDebug
 
