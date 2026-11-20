@@ -480,8 +480,225 @@ const GR=[['Foundations',0,4],['PSP Basics',5,10],['PSP Levels',11,16],['Quality
 const BG=[['Defect Log','A developer fixes bugs silently and never records them.','Log every defect with its type and phase'],['Time and Cost Pressure','Management demands an early release and testing gets cut.','Defend a realistic plan with data'],['PROBE','A developer guesses lines of code from gut feeling.','Estimate from proxies and your own history'],['Developer’s Paradox','The team skips logging because it feels slow.','Keep logging; discipline pays back in less rework'],['A/FR','All effort goes into debugging in test; reviews are skipped.','Invest in design and code reviews'],['Level 1 Initial','Success depends on one hero who may leave.','Document and standardize the process'],['TSP','A team starts TSP but nobody knows PSP.','Train engineers in PSP first'],['Process Failure','After a disaster the manager fires the developer.','Fix the process that allowed it'],['Learning','An improvement pilot ends and nobody evaluates it.','Evaluate results and feed them into the next cycle'],['CMMI','A firm expects CMMI to give step-by-step instructions.','Remember CMMI says what, and choose your own how']];
 const BN=['Gigachad_Gary','NPC_Nora','SigmaSam','DebugQueen','ByteMeBro','PROBE_Pete','CMMI_Cathy','Fabio_404','Yield_Yara'];
 </script>
+<script type="text/plain" id="cd-kddm">
+const D=`🔎|Knowledge Discovery|Turning raw data into useful and understandable information by finding patterns, anomalies and relationships. It is an iterative process that supports decisions.|A detective turning scattered clues into a solved case.
+⛏️|Data Mining|The step where algorithms are applied to a dataset to identify patterns. It is only one stage of the larger discovery process.|Digging for gold inside a mountain of rock.
+🪜|KDD Process|Five stages: selection, cleaning and preprocessing, transformation and reduction, data mining, then evaluation and interpretation.|A five-step staircase from raw data up to knowledge.
+🎯|Data Selection|Choosing the variables, subsets and samples that help answer the question. Good selection saves computing power and sets the scope.|Picking only the ingredients the recipe needs.
+🧹|Data Cleaning|Fixing duplicates, misspellings, mixed formats, missing values and outliers so that conclusions are reliable.|Washing vegetables before cooking.
+🔄|Data Transformation|Converting data into a format suited for analysis: new features, scaling, grouping, aggregation and encoding.|Chopping and measuring ingredients before they go into the pot.
+🧠|Evaluation and Interpretation|Judging the patterns found with numbers such as error rates and with human review, then explaining them clearly to non-technical audiences.|A taste test followed by a friendly menu description.
+💡|Useful Pattern|An insight that is accurate, novel, relevant and understandable. A pattern that fails these tests is just noise.|A tip that is true, new, on-topic and easy to follow.
+🏷️|Classification|Assigning records to categories learned from known examples, such as will this customer return yes or no.|Sorting letters into the right pigeonholes.
+📈|Regression|Estimating a continuous numeric value, such as the cost of an order. Linear and multiple regression are common forms.|Drawing a best-fit line to guess a house price.
+🫧|Clustering|Grouping similar data points together without any predefined labels.|Party guests naturally forming circles of friends.
+🛒|Association Rules|Finding items that frequently occur together, as in market basket analysis. Example: phone case plus screen protector.|Noticing that shoppers who buy bread also grab butter.
+🚨|Anomaly Detection|Spotting unusual data points that differ from the rest, such as a fraudulent transaction.|A guard noticing one person walking against the crowd.
+🌳|Decision Tree|A classifier that asks a chain of yes or no questions about the features until it reaches a class.|A game of twenty questions played with data.
+👥|K-Nearest Neighbors|Classifies a new record by the majority class among its K closest known records.|Asking your nearest neighbours which restaurant to pick.
+📍|K-Means|A clustering method that places K centres and assigns every point to its nearest centre, repeating until the groups are stable.|Pins on a map where every customer joins the closest pin.
+📋|Descriptive Mining|Summarizes what is in the existing data to reveal patterns. It asks what happened or what is associated.|A yearbook describing a class that already graduated.
+🔮|Predictive Mining|Uses known examples to estimate an unknown outcome for a new case or a future period. Predictions are estimates, not guarantees.|A weather forecaster.
+📊|Data Summarization|Condensing data into useful descriptions, such as the average order value by product category.|A one-page report card for a whole school.
+⏱️|Time-Series Forecasting|Estimating future values from sequential data points, using trends and seasonality.|Predicting next summer ice cream sales from past summers.
+⚠️|Correlation vs Causation|Two things moving together does not prove that one causes the other, so descriptive patterns need careful reading.|Ice cream sales and sunburns both rise in summer, yet ice cream does not burn skin.
+🧪|Train-Test Split|Keeping some data unseen during training so that predictions are judged on cases the model has never met.|A student who is tested on questions not seen in the homework.
+🏢|Data Warehouse|A managed store that integrates data from many systems into one consistent historical form for analysis.|A library that gathers books from every branch and shelves them with one system.
+🏪|OLTP|Online Transaction Processing: many small reads and writes that run the business, on normalised tables.|The shop till ringing up each sale.
+🧊|OLAP|Online Analytical Processing: large reads and aggregations that analyse measures across dimensions.|A pilot dashboard summarizing the whole flight.
+📐|Measures and Dimensions|A measure is a number you add up, like revenue. A dimension is context you group by, like time, location, product or customer.|Revenue is the cake and the dimensions are the ways of cutting it.
+🍰|Slice|An OLAP operation that fixes one dimension to a single value, such as only the year 2018.|Cutting one layer off a cake.
+🎲|Dice|An OLAP operation that restricts several dimensions at once to pick out a sub-cube.|Cutting a small cube out of a block of cheese.
+🔍|Drill Down|Moving from a summary to more detail, for example from year to quarter to month.|Zooming in on a map from country to street.
+🔼|Roll Up|Moving from detail to a summary, for example from city sales to country totals.|Zooming out from the street to the whole country.
+📘|Kimball Method|Design a warehouse in four steps: pick the business process, declare the grain, choose the dimensions, then choose the facts.|Planning a house: purpose first, then room sizes.
+⭐|Star Schema|One fact table in the centre with every dimension one join away. The dimensions are denormalized.|A sun with planets circling around it.
+📏|Fact Table|Stores numeric measures of a business event at one declared grain, plus a key for each dimension.|A receipt roll recording every single sale.
+📇|Dimension Table|Holds descriptive context such as who, what, where and when, used to filter, group and label the facts.|The labels on a shop shelf.
+🔬|Grain|Exactly what one fact row represents, such as one order line. It is declared first and never mixed within one table.|The size of one pixel in a photo.
+🔑|Surrogate Key|A generated integer or hash that is the primary key of a dimension. Fact rows point to it.|A hotel room key card number instead of the guest name.
+🪪|Business Key|The identifier from the source system, kept as a unique column so the surrogate key can be looked up.|Your national ID number.
+🧷|Degenerate Dimension|An identifier such as an order number that stays in the fact table because it has no dimension table of its own.|A ticket number printed on the receipt itself.
+👻|Orphan Row|A fact row whose foreign key matches nothing in its dimension. The expected count is always zero.|A child whose parent is missing from the register.
+⚖️|Reconciliation|Checking that warehouse totals and row counts match the source after a load, so nothing was lost or duplicated.|Counting the till against the receipts at closing time.
+📖|Data Dictionary|A document describing every attribute of a dataset: its meaning, type and relationships.|The glossary at the back of a textbook.
+🧽|Data Wrangling|Reshaping and tidying raw data so that it is ready to analyse.|Tidying a messy workshop before building anything.
+🔗|Data Integration|Combining data from several sources, such as point of sale data, departments and external files, so the analysis is complete.|Merging puzzle pieces from different boxes.
+🤝|Inner Join|Joining tables by a key and keeping only the rows whose key appears in both tables, the intersection.|Only the guests who are on both party lists.
+⬅️|Left Join|Keeps every row of the left table and adds matching data from the right, leaving gaps where nothing matches.|Taking a class list and adding exam scores where they exist.
+🌐|Outer Join|Keeps all rows from both tables and fills the gaps where a key has no partner.|Inviting everybody from both guest lists.
+🧱|Stacking Rows|Appending one table under another with the same columns. You can keep only shared columns or all columns.|Putting two stacks of papers into one pile.
+🛠️|Feature Engineering|Creating or transforming variables from raw data, like BMI from height and weight or a price index against the average.|Mixing flour and eggs into batter.
+🌡️|Consistent Formatting|Fixing multiple representations of the same thing, like N America and North America, or several date formats and units.|Everyone in the meeting speaking one language.
+📏|Min-Max Scaling|Rescales a numeric field into the range 0 to 1 using its minimum and maximum. It is sensitive to outliers.|Shrinking every ruler to the same length.
+📉|Z-Score|Standardizes a value by how many standard deviations it sits from the average. It copes better with outliers.|Your exam mark compared with the class average.
+🕳️|Missing Data|Empty or unknown values. Options are dropping fields, dropping rows or replacing the values.|Blank squares in a crossword.
+🏁|Constant Imputation|Filling gaps with a fixed flag, such as 0 for numbers or Unknown for text.|Writing TBD in every empty box.
+🧮|Mean Median Mode Imputation|Replacing gaps with a typical value: mean for symmetric numbers, median for skewed numbers with outliers, mode for categories.|Choosing the fair middle: the average, the middle person or the most popular.
+🎩|Random Imputation|Filling gaps with values drawn at random from the existing data, which preserves the natural variance.|Drawing names from a hat.
+🤖|Predictive Imputation|Training a model that predicts the missing values from the other columns. It takes more effort but uses relationships in the data.|A detective deducing a missing clue from the other evidence.
+🪣|Discretization|Putting continuous values into a limited number of buckets, such as age groups Child, Youth, Adult and Mature.|Sorting people into shirt sizes.
+🏔️|Concept Hierarchy|Organising data from granular to general, such as Addis Ababa then Ethiopia.|A postal address that runs from house to country.
+📆|Data Aggregation|Combining detailed rows into summary values, like daily sales turned into monthly totals or averages.|Adding up the daily till slips into a monthly figure.
+🔢|Encoding|Converting categories into numbers or flags, such as blue to is_blue, or high, medium and low to 2, 1 and 0.|Giving every colour a code number.
+📣|Noisy Data and Outliers|Extreme or random values that distort results, such as one huge salary in an otherwise modest community.|One shout in a quiet library.
+⏳|Time Series Data|Sequential data points over time, used to study trends, seasonality and temporal dependencies. Example: stock prices.|A diary of daily temperatures.
+🕸️|Graph Data|Nodes and edges that capture objects and their relationships. Edges can be directed or undirected and can carry weights.|A social map of friends and followers.
+🎬|Multimedia Data|Text, images, video, graphics and audio, used for voice recognition, image classification and topic identification.|A phone that sees, hears and reads.
+🐘|Big Data|Data with huge volume, high velocity and wide variety that normal data management systems cannot handle.|A bookstore receipt box versus every click on a global shop.
+🤲|Fairness and Bias|Reducing unfair outcomes that come from skewed historical data, such as a policing algorithm trained on past policing.|A referee who judges every team by the same rules.
+📑|Accountability|Complying with regulations and assessing the impact of mining results, with someone answerable for them.|A signed report with a name on it.
+🔦|Transparency|Informed consent and clear documentation, so people know how their data is used.|A kitchen with glass walls.
+🔐|Access Control|Restricting who may see sensitive data, such as margins and discounts being visible only to finance.|A key-card door.
+🎭|Anonymization and Privacy|Removing identifying details so that patients and consumers cannot be traced.|A witness whose face is blurred.`.split('\n').map(l=>{let a=l.split('|');return{e:a[0],t:a[1],d:a[2],a:a[3]}});
+const SO=[["Data Cleaning", "Cleaning or Transformation?", "Cleaning", "Transformation", "Remove duplicate orders,Fix the Grup 1 typo,Replace an empty age,Handle an outlier", "Min-max scale income,Combine height and weight into BMI,Convert blue to is_blue,Group ages into buckets"],
+["Classification", "Classification or Regression?", "Classification", "Regression", "Will the customer return?,Is this email spam?,Which class is this patient in?", "What will this order cost?,How tall will the plant grow?,Estimate the house price"],
+["Descriptive Mining", "Descriptive or Predictive?", "Descriptive", "Predictive", "Average order value by category,Items bought together,Pass rate by attendance", "Will this customer return?,Estimated risk of failing,Next month sales forecast"],
+["OLTP", "OLTP or OLAP?", "OLTP", "OLAP", "Where is order 123?,Many small writes,Normalised tables,Runs the business", "Revenue by state and quarter,Large aggregations,Star schema,Analyses the business"],
+["Slice", "Slice or Dice?", "Slice", "Dice", "Fix the year to 2018,One dimension to one value", "Year and state and category together,Select a sub-cube"],
+["Drill Down", "Drill Down or Roll Up?", "Drill Down", "Roll Up", "Year to quarter to month,See every single order,Zoom in", "City totals to country total,Monthly to yearly,Zoom out"],
+["Fact Table", "Fact or Dimension?", "Fact", "Dimension", "Price and freight value,Line total,Numbers you add up,One row per order line", "Customer city and state,Product category,Calendar year and quarter,Labels for filtering"],
+["Surrogate Key", "Surrogate or Business Key?", "Surrogate", "Business", "Generated by the warehouse,customer_key = 1 2 3,A hash of the id", "Comes from the source system,customer_unique_id,product_id"],
+["Inner Join", "Inner or Outer Join?", "Inner Join", "Outer Join", "Only matching keys,The intersection,Kiwis and Onions only", "Every key from both tables,Broccoli and Tomatoes included,Gaps filled with NaN"],
+["Min-Max Scaling", "Min-Max or Z-Score?", "Min-Max", "Z-Score", "Range locked between 0 and 1,Uses the minimum and maximum,Sensitive to outliers", "Counts standard deviations from the mean,Result can be negative,Handles outliers better"],
+["Mean Median Mode Imputation", "Mean or Median?", "Mean", "Median", "Symmetric data,No extreme outliers,Age values", "Skewed salaries,Heavy outliers,Income data"],
+["Time Series Data", "Time Series or Graph Data?", "Time series", "Graph", "Stock prices,Temperature over weeks,Seasonality", "Friends network,Nodes and edges,Steps between two people"],
+["Big Data", "Small Data or Big Data?", "Small data", "Big data", "One MySQL database,Daily receipts of a bookstore,Fits on one server", "Millions of clicks per second,Unstructured video and reviews,Needs special systems"]];
+const SQ=[["KDD Process", "Order the five KDD stages", "Data Selection,Cleaning and Preprocessing,Transformation and Reduction,Data Mining,Evaluation and Interpretation"],
+["Evaluation and Interpretation", "Order the final KDD stage", "Check error rates,Human review,Visualize and summarize,Report to non-technical readers"],
+["Predictive Mining", "Order the predictive workflow", "Collect past examples,Train a model,Test on unseen data,Predict a new case"],
+["Data Warehouse", "Order the analytical workflow", "Data sources,Data warehouse,OLAP and data mining,Insight"],
+["Drill Down", "Drill down from year to day", "Year,Quarter,Month,Day"],
+["Kimball Method", "Order the four Kimball design steps", "Business process,Grain,Dimensions,Facts"],
+["Star Schema", "Order the warehouse build", "Build the dimensions,Build the fact table,Validate grain and orphans and totals"]];
+const SC=[["Data Selection", "A grocery chain studying customer retention keeps only the loyalty members and the years that matter."],
+["Data Cleaning", "A group column holds Group 1 and Grup 1 and Group1 and group 1 as four separate categories."],
+["Classification", "A clinic labels each patient as high risk or low risk using past records."],
+["Regression", "An analyst estimates how much a new order will cost from its size and weight."],
+["Clustering", "A bank groups customers by behaviour without knowing any group names in advance."],
+["Association Rules", "A shop notices that customers who buy phone cases often add screen protectors."],
+["Anomaly Detection", "One card suddenly makes 40 purchases in a foreign city within an hour."],
+["Time-Series Forecasting", "A retailer estimates next month sales from three years of monthly figures."],
+["Train-Test Split", "A model looks perfect, but it was only scored on the exact rows it learned from."],
+["Correlation vs Causation", "Attendance and pass rate rise together, yet nobody has shown attendance alone is the reason."],
+["Descriptive Mining", "A university studies last semester results to see how pass rates differ by attendance."],
+["Predictive Mining", "The university uses past students to estimate which current students may fail."],
+["OLAP", "A manager explores revenue by month, region and product interactively."],
+["OLTP", "A cashier system records thousands of small sales every hour."],
+["Data Warehouse", "Orders, customers and payments sit in separate systems. The company wants one consistent historical store."],
+["Slice", "An analyst keeps only the rows of the year 2018 and looks at everything else."],
+["Dice", "An analyst restricts year, state and product category at the same time."],
+["Drill Down", "A manager clicks a yearly total to see the quarters and then the months."],
+["Roll Up", "City sales figures are added into one total per country."],
+["Grain", "The team must decide whether one fact row is a whole order or a single product line."],
+["Surrogate Key", "Fact rows point to a generated number in the customer table instead of the source system id."],
+["Orphan Row", "A fact row refers to a customer key that does not exist in the customer table."],
+["Reconciliation", "After loading, the team compares total revenue in the source and the warehouse."],
+["Inner Join", "Only products that appear in both the price table and the quantity table are kept."],
+["Left Join", "Every product in the price table stays, even when it has no quantity yet."],
+["Stacking Rows", "Two tables with the same columns but different products are put one under the other."],
+["Feature Engineering", "A team combines height and weight into a single health index column."],
+["Min-Max Scaling", "Age from 1 to 100 and salary from 10K to 500K are squeezed into the same 0 to 1 range."],
+["Z-Score", "A value is expressed as how many standard deviations it lies from the average."],
+["Mean Median Mode Imputation", "Empty salaries get the middle value because a few huge salaries skew the data."],
+["Random Imputation", "Empty ages are filled with ages drawn from other employees to keep the spread."],
+["Predictive Imputation", "A model uses the other columns to guess the missing salaries."],
+["Discretization", "Ages are turned into groups named Child, Youth, Adult and Mature."],
+["Encoding", "The colour values blue and green become two yes or no columns."],
+["Data Aggregation", "Daily sales are turned into monthly totals."],
+["Big Data", "A platform processes millions of clicks and videos every second."],
+["Graph Data", "A network records who follows whom and how many steps separate two users."],
+["Fairness and Bias", "A policing model trained on past arrests keeps sending patrols to the same neighbourhoods."],
+["Access Control", "Only the finance team may see product margins and discount levels."],
+["Anonymization and Privacy", "Hospital records are shared for research after names and ids are removed."]];
+const R=["Lost Intern", "Curious Analyst", "Data Collector", "Spreadsheet Rookie", "Data Cleaner", "Query Scout", "Pattern Spotter", "Feature Crafter", "Join Master", "Cube Explorer", "Star Architect", "Warehouse Keeper", "Model Builder", "Cluster Captain", "Outlier Hunter", "Insight Maker", "Ethics Guardian", "Data Scientist", "Chief Miner", "Grand Data Miner"];
+const SCN=`🗃️ ➡️ 🔎 ➡️ 💡
+⛏️ 🪨 ➡️ 🪙
+1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣
+🗄️ ➡️ 🎯 ➡️ 📂
+🥬 🚿 ➡️ ✨
+📦 ➡️ 🔪 ➡️ 🥣
+📊 👀 ➡️ 🗣️
+✅ 🆕 🎯 👓
+✉️ ➡️ 🗂️
+🏠 📏 ➡️ 💰
+🧍 🧍 🧍 ➡️ 🫧 🫧
+📱 🛡️ 🛒
+🚶 🚶 🚶 🕵️
+❓ ➡️ 🌳 ➡️ 🏷️
+🏘️ 🗳️ ➡️ 🏷️
+📍 🔴 🔵 ➡️ 🫧
+📋 👀 🕰️
+🔮 ➡️ ❓
+🧾 ➡️ 📊
+📅 📈 ➡️ 🔮
+🍦 ☀️ 🔥
+📚 ➡️ 🧪 📝
+🏪 🏪 ➡️ 🏢
+🧾 ⚡ 🏪
+🧊 📊
+💰 🕒 📍 📦
+🍰 🔪 ➡️ 1️⃣
+🧀 🔪 🔪 ➡️ 🧊
+🌍 ➡️ 🏙️ ➡️ 🏠
+🏠 ➡️ 🏙️ ➡️ 🌍
+1️⃣ 2️⃣ 3️⃣ 4️⃣
+⭐ 🪐 🪐 🪐
+🧾 💰
+📇 🏷️ 🔎
+🔬 🧱 ➡️ 1️⃣
+🔢 🗝️
+🪪 🔎 ➡️ 🔑
+🎫 🧾
+🧾 ➡️ ❓ 👻
+🧮 ⚖️ ✅
+📖 🔤
+🧰 ➡️ ✨
+🧩 🧩 ➡️ 🖼️
+🔵 🤝 🔴 ➡️ 🟣
+📋 ⬅️ 📝
+🔵 🔴 ➡️ 🟣 🔵 🔴
+📄 📄 ➡️ 📚
+📏 ⚖️ ➡️ 🧮
+🌡️ 🔤 ➡️ ✅
+📏 ➡️ 0️⃣ 1️⃣
+🎓 📊 ➡️ ➕ ➖
+🔳 ❓
+🕳️ ➡️ 🏁
+🧮 ➡️ 🕳️ ✅
+🎩 ➡️ 🕳️
+🕳️ 🤖 ➡️ ✅
+🎂 ➡️ 🪣
+🏠 ➡️ 🏙️ ➡️ 🇪🇹
+🧾 🧾 🧾 ➡️ 📆
+🟦 ➡️ 1️⃣ 0️⃣
+🔇 📣
+📅 📈
+🔵 ➖ 🔵 ➖ 🔵
+🖼️ 🎧 📝
+🐘 🌊
+🤲 ⚖️
+📑 ✍️
+🔦 📖
+🔐 💳 🚪
+🎭 🏥`.split('\n');D.forEach((c,i)=>c.s=SCN[i]);
+const GR=[["Foundations", 0, 7], ["Mining Methods", 8, 21], ["Warehouse and OLAP", 22, 29], ["Dimensional Modeling", 30, 39], ["Explore and Integrate", 40, 47], ["Cleaning and Scaling", 48, 60], ["Challenges and Ethics", 61, 69]];
+const BG=[["Data Cleaning", "Empty age fields defaulted to zero and the average customer age dropped to 12.", "Treat the gaps as missing values instead of real zeros"],
+["Data Selection", "A team trained a model on terabytes of irrelevant logs and ran out of computing power.", "Select only the variables and samples the question needs"],
+["Train-Test Split", "A team reported 99 percent accuracy measured on the same data the model trained on.", "Evaluate on data the model has never seen"],
+["Correlation vs Causation", "A report claimed that attendance causes high pass rates and the school forced attendance.", "Look for other explanations before claiming a cause"],
+["Grain", "A fact table mixed order rows and order line rows, so revenue was counted twice.", "Declare one grain and keep it in every row"],
+["Orphan Row", "Some sales rows point to a product key that does not exist and vanish from reports.", "Check for orphan rows after every load"],
+["Inner Join", "An inner join from orders to items silently removed 775 orders that had no items.", "Use a left join when unmatched rows matter"],
+["Min-Max Scaling", "One huge outlier squeezed all other salaries into a tiny range near zero.", "Handle the outlier or use z-score standardization"],
+["Missing Data", "The team deleted every row with any missing value and lost most of the dataset.", "Drop only what is needed and impute the rest"],
+["Mean Median Mode Imputation", "Missing salaries were replaced by the mean even though a few giant salaries skew the data.", "Use the median for skewed data"],
+["Fairness and Bias", "A hiring model trained on past decisions copied old discrimination.", "Audit the training data and test the outcomes for fairness"],
+["Anonymization and Privacy", "A published dataset still contained patient names.", "Remove or mask identifiers before sharing"]];
+const BN=["Gigachad_Gary", "NPC_Nora", "SigmaSam", "DebugQueen", "ByteMeBro", "Cluster_Clara", "Join_Jonas", "Fabio_404", "Outlier_Olga"];
+</script>
 <script>
-const COURSES={"st": {"name": "Systems Quest", "full": "Systems Thinking & System Approach", "icon": "🏙️", "intro": "Learn systems thinking and the systems approach from zero. 1000 levels.", "ready": "Ready to think in systems? Pick a mission!", "hub": "Systems"}, "soa": {"name": "Service Quest", "full": "Service-Oriented Architecture", "icon": "🧩", "intro": "Learn Service-Oriented Architecture from zero. 1000 levels.", "ready": "Ready to build a city of services? Pick a mission!", "hub": "SOA"}, "spi": {"name": "Process Quest", "full": "Software Process Improvement", "icon": "📈", "intro": "Learn Software Process Improvement from zero. 1000 levels.", "ready": "Ready to level up your process? Pick a mission!", "hub": "SPI"}},SOON=[["ci", "⚙️", "Continuous Integration & Deployment"], ["kddm", "🔎", "Knowledge Discovery & Data Mining"], ["inc", "🌍", "Inclusiveness"]];
+const COURSES={"st": {"name": "Systems Quest", "full": "Systems Thinking & System Approach", "icon": "🏙️", "intro": "Learn systems thinking and the systems approach from zero. 1000 levels.", "ready": "Ready to think in systems? Pick a mission!", "hub": "Systems"}, "soa": {"name": "Service Quest", "full": "Service-Oriented Architecture", "icon": "🧩", "intro": "Learn Service-Oriented Architecture from zero. 1000 levels.", "ready": "Ready to build a city of services? Pick a mission!", "hub": "SOA"}, "spi": {"name": "Process Quest", "full": "Software Process Improvement", "icon": "📈", "intro": "Learn Software Process Improvement from zero. 1000 levels.", "ready": "Ready to level up your process? Pick a mission!", "hub": "SPI"}, "kddm": {"name": "Mining Quest", "full": "Knowledge Discovery & Data Mining", "icon": "🔎", "intro": "Learn Knowledge Discovery and Data Mining from zero. 1000 levels.", "ready": "Ready to dig for insights? Pick a mission!", "hub": "KDDM"}},SOON=[["ci", "⚙️", "Continuous Integration & Deployment"], ["inc", "🌍", "Inclusiveness"]];
 let CID='st';try{CID=localStorage.sysq_course||'st'}catch(e){}if(!COURSES[CID])CID='st';
 const CO=COURSES[CID],KP=k=>CID=='st'?k:k+'_'+CID,SKEY=KP('sysq'),LKEY=KP('sysq_league'),BKEY=KP('sysq_board');
 document.title=CO.name;
