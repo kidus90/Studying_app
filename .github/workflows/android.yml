@@ -59,8 +59,42 @@ jobs:
           echo "---- tail of android/app/build.gradle ----"
           tail -15 android/app/build.gradle
 
+      - name: Sign with the permanent key and bump the version
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_B64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
+        run: |
+          if [ -z "$KEYSTORE_B64" ] || [ -z "$KEYSTORE_PASSWORD" ] || [ -z "$KEYSTORE_ALIAS" ]; then
+            echo "::error::Missing secrets KEYSTORE_B64, KEYSTORE_PASSWORD or KEYSTORE_ALIAS (repo Settings > Secrets and variables > Actions). Without them every build gets a new random key and phones refuse to update."
+            exit 1
+          fi
+          echo "$KEYSTORE_B64" | base64 -d > android/app/study-quest.keystore
+          cat >> android/app/build.gradle <<'EOF'
+
+          // Same signing key on every build, so Android accepts the APK as an update
+          android {
+              signingConfigs {
+                  debug {
+                      storeFile file('study-quest.keystore')
+                      storePassword System.getenv('KEYSTORE_PASSWORD')
+                      keyAlias System.getenv('KEYSTORE_ALIAS')
+                      keyPassword System.getenv('KEYSTORE_PASSWORD')
+                  }
+              }
+              defaultConfig {
+                  versionCode Integer.parseInt(System.getenv('RUN_NUMBER') ?: '1')
+                  versionName "1.0." + (System.getenv('RUN_NUMBER') ?: '1')
+              }
+          }
+          EOF
+
       - name: Build debug APK
         working-directory: android
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
+          RUN_NUMBER: ${{ github.run_number }}
         run: ./gradlew assembleDebug
 
       - name: Verify the widget is inside the APK
